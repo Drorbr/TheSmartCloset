@@ -1,4 +1,4 @@
-package com.morandror.scManager;
+package com.morandror.scmanager;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

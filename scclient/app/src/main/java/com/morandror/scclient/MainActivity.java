@@ -1,13 +1,9 @@
 package com.morandror.scclient;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -76,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> task) {
-        setContentView(R.layout.home_page_activity);
+        Intent startNewActivity = new Intent(this, home_page_activity2.class);
+        startActivity(startNewActivity);
     }
 }

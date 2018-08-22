@@ -1,4 +1,4 @@
-package com.morandror.scManager;
+package com.morandror.scmanager;
 
 public class LoggingController {
 }
