@@ -1,40 +1,41 @@
 package com.morandror.database;
 
+import com.morandror.database.repositories.ClosetRepository;
+import com.morandror.database.repositories.ItemRepository;
+import com.morandror.database.repositories.UserRepository;
+import com.morandror.models.dbmodels.User;
 import com.morandror.scmanager.LoggingController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.util.List;
 
+@Component
 public class DBHandler {
-
     Logger logger = LogManager.getLogger(LoggingController.class);
 
-    private static DBHandler ourInstance = new DBHandler();
-    private final String url = "jdbc:mysql://localhost:3306/scdb?useSSL=false";
-    private final String username = "admin";
-    private final String password = "Password1!";
-    private final String driver = "com.mysql.jdbc.Driver";
-    private Connection connection;
+    @Autowired
+    private ClosetRepository closetRepository;
 
-    public static DBHandler getInstance() {
-        return ourInstance;
-    }
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     private DBHandler() {
-        try {
-            Class.forName(driver).newInstance();
-            connection = DriverManager.getConnection(url, username, password);
-            logger.info("Database connected!");
-        } catch (Exception e) {
-            logger.error("Cannot connect the database!");
-            throw new IllegalStateException("Cannot connect the database!", e);
-
-        }
+        logger.info("Database connected!");
     }
 
-    public ResultSet executeQuery(String statement) throws SQLException {
-        Statement st = connection.createStatement();
-        return st.executeQuery(statement);
+    public User getUser(int id) {
+        return userRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " was not found"));
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
