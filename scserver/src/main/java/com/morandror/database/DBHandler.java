@@ -38,4 +38,8 @@ public class DBHandler {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public void addUser(User newUser) {
+        userRepository.save(newUser);
+    }
 }

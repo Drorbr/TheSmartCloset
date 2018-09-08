@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class scManager {
     Logger logger = LogManager.getLogger(LoggingController.class);
@@ -20,7 +22,11 @@ public class scManager {
         return "Alive!";
     }
 
-    public User checkDB() {
-        return dbHandler.getUser(0);
+    public List<User> checkDB() {
+        return dbHandler.getAllUsers();
+    }
+
+    public void addUser(User newUser) {
+        dbHandler.addUser(newUser);
     }
 }

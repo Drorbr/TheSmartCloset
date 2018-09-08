@@ -6,9 +6,9 @@ import com.morandror.scmanager.scManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/scServer")
@@ -28,7 +28,17 @@ public class ScServerController {
     }
 
     @RequestMapping(value = "/checkdb", method = RequestMethod.GET)
-    public User checkDB() throws Exception {
+    public List<User> checkDB() throws Exception {
         return manager.checkDB();
+    }
+
+    @RequestMapping(value = "/user/add", method = RequestMethod.POST)
+    public String addUser(@RequestBody User newUser){
+/*        if(newUser.getId() == 0){
+
+        }*/
+        manager.addUser(newUser);
+
+        return "redirect:/checkdb";
     }
 }
