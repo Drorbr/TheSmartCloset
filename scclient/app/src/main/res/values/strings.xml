@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">scclient</string>
+    <string name="app_name">The Smart Closet</string>
+    <string name="server_client_id">627505152089-vdq32iprh8gfjfiljnpm3gdhldj91uhb.apps.googleusercontent.com</string>
+    <string name="client_token_id">client_token_id</string>
+    <string name="serverPath">"http://localhost:8080/</string>
+    <string name="getUserPath">user/get</string>
 </resources>

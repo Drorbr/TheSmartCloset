@@ -1,4 +1,4 @@
-package com.morandror.scclient;
+package com.morandror.scclient.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.morandror.scclient.http.RequestQueueSingleton;
+import com.morandror.scclient.R;
+import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
 import org.json.JSONArray;
 
@@ -21,7 +22,7 @@ public class home_page_activity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page_activity2);
 
-        String url = "http://192.168.1.106:8080/scServer/checkdb";
+        String url = "http://localhost:8080/scServer/checkdb";
         final TextView mTextView = findViewById(R.id.textView3);
 
         JsonArrayRequest jonArrayRequest = new JsonArrayRequest
@@ -43,5 +44,7 @@ public class home_page_activity2 extends AppCompatActivity {
 
         // Add the request to the RequestQueue.
         RequestQueueSingleton.getInstance(this).getRequestQueue().add(jonArrayRequest);
+
     }
+
 }

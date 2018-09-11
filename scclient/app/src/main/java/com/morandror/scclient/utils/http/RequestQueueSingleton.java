@@ -1,4 +1,4 @@
-package com.morandror.scclient.http;
+package com.morandror.scclient.utils.http;
 
 import android.content.Context;
 import android.graphics.Bitmap;
