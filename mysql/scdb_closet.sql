@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.12, for Win64 (x86_64)
 --
--- Host: localhost    Database: scdb
+-- Host: 127.0.0.1    Database: scdb
 -- ------------------------------------------------------
 -- Server version	8.0.12
 
@@ -23,14 +23,14 @@ DROP TABLE IF EXISTS `closet`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `closet` (
-  `id` int(11) NOT NULL,
+  `closet_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
   `image` blob,
   `rfid_scanner` varchar(45) NOT NULL,
   `description` varchar(45) NOT NULL,
   `location` varchar(45) NOT NULL,
   `insert_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`closet_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-29 22:19:53
+-- Dump completed on 2018-09-11 20:59:12

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.12, for Win64 (x86_64)
 --
--- Host: localhost    Database: scdb
+-- Host: 127.0.0.1    Database: scdb
 -- ------------------------------------------------------
 -- Server version	8.0.12
 
@@ -23,11 +23,12 @@ DROP TABLE IF EXISTS `user_has_closet`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `user_has_closet` (
-  `userId` int(11) NOT NULL,
   `closet_id` int(11) NOT NULL,
-  PRIMARY KEY (`userId`,`closet_id`),
-  KEY `fk_user_has_closet_closet1_idx` (`closet_id`),
-  KEY `fk_user_has_closet_user1_idx` (`userId`)
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`closet_id`,`user_id`),
+  KEY `FK7hw73ts9xmyhw7rslbasbhhd7` (`user_id`),
+  CONSTRAINT `FK7hw73ts9xmyhw7rslbasbhhd7` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FKlsifpt0k161v5aoo8r9ckf23a` FOREIGN KEY (`closet_id`) REFERENCES `closet` (`closet_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -37,6 +38,7 @@ CREATE TABLE `user_has_closet` (
 
 LOCK TABLES `user_has_closet` WRITE;
 /*!40000 ALTER TABLE `user_has_closet` DISABLE KEYS */;
+INSERT INTO `user_has_closet` VALUES (0,2);
 /*!40000 ALTER TABLE `user_has_closet` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-29 22:19:52
+-- Dump completed on 2018-09-11 20:59:11
