@@ -35,7 +35,7 @@ public class User extends BaseModel {
     private String email;
 
     //@Enumerated(EnumType.STRING)
-    @NotNull
+    //@NotNull
     @Column(name = "gender")
     private String gender;
 
