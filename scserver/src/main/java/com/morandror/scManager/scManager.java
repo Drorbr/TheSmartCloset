@@ -1,6 +1,7 @@
 package com.morandror.scmanager;
 
 import com.morandror.database.DBHandler;
+import com.morandror.models.dbmodels.Closet;
 import com.morandror.models.dbmodels.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class scManager {
@@ -28,5 +30,13 @@ public class scManager {
 
     public void addUser(User newUser) {
         dbHandler.addUser(newUser);
+    }
+
+    public User getUser(String token) {
+        return dbHandler.getUser(token);
+    }
+
+    public Optional<Closet> getCloset(int closetID) {
+        return dbHandler.getCloset(closetID);
     }
 }

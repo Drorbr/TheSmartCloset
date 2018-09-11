@@ -1,15 +1,9 @@
 package com.morandror.models.dbmodels;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.morandror.models.BaseModel;
-import com.morandror.models.dbmodels.enums.Gender;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +25,10 @@ public class User extends BaseModel {
     @NotNull
     @Column(name = "last_name")
     private String lastName;
+
+    @NotNull
+    @Column(name = "token")
+    private String tokenID;
 
     @NotNull
     @Column(name = "email")
@@ -97,5 +95,13 @@ public class User extends BaseModel {
 
     public void setClosets(Set<Closet> closets) {
         this.closets = closets;
+    }
+
+    public String getTokenID() {
+        return tokenID;
+    }
+
+    public void setTokenID(String tokenID) {
+        this.tokenID = tokenID;
     }
 }

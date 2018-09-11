@@ -1,11 +1,14 @@
 package com.morandror.scserver;
 
+import com.morandror.models.TokenID;
+import com.morandror.models.dbmodels.Closet;
 import com.morandror.models.dbmodels.User;
 import com.morandror.scmanager.LoggingController;
 import com.morandror.scmanager.scManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,12 +36,21 @@ public class ScServerController {
     }
 
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
-    public String addUser(@RequestBody User newUser){
-/*        if(newUser.getId() == 0){
+    public User addUser(@RequestBody User newUser) {
+        if (newUser.getId() == 0) {
+            manager.addUser(newUser);
+        }
 
-        }*/
-        manager.addUser(newUser);
+        return manager.getUser(newUser.getTokenID());
+    }
 
-        return "redirect:/checkdb";
+    @RequestMapping(value = "/user/get", method = RequestMethod.POST)
+    public User getUser(@RequestBody TokenID token) {
+        return manager.getUser(token.getToken());
+    }
+
+    @RequestMapping(value = "/closet/get/{id}", method = RequestMethod.GET)
+    public Closet getCloset(@PathVariable("id") int closetID) {
+        return manager.getCloset(closetID).get();
     }
 }
