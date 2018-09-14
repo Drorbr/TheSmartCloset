@@ -4,4 +4,5 @@
     <string name="client_token_id">client_token_id</string>
     <string name="serverPath">"http://localhost:8080/</string>
     <string name="getUserPath">user/get</string>
+    <string name="user">user</string>
 </resources>

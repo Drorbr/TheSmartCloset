@@ -8,7 +8,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.morandror.scclient.R;
+import com.morandror.scclient.models.User;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
 import org.json.JSONArray;
@@ -25,25 +27,32 @@ public class home_page_activity2 extends AppCompatActivity {
         String url = "http://localhost:8080/scServer/checkdb";
         final TextView mTextView = findViewById(R.id.textView3);
 
-        JsonArrayRequest jonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        User user = (User)getIntent().getSerializableExtra(getString(R.string.user));
 
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        mTextView.setText("Response: " + response.toString());
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-
-                    }
-                });
-
-
-        // Add the request to the RequestQueue.
-        RequestQueueSingleton.getInstance(this).getRequestQueue().add(jonArrayRequest);
+        try {
+            mTextView.setText(user.toJson());
+        } catch (JsonProcessingException e) {
+            System.out.println("Failed to show user details");
+        }
+//        JsonArrayRequest jonArrayRequest = new JsonArrayRequest
+//                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+//
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        mTextView.setText("Response: " + response.toString());
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // TODO: Handle error
+//
+//                    }
+//                });
+//
+//
+//        // Add the request to the RequestQueue.
+//        RequestQueueSingleton.getInstance(this).getRequestQueue().add(jonArrayRequest);
 
     }
 

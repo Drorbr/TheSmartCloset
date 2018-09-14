@@ -21,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
 import com.morandror.scclient.R;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 import com.morandror.scclient.models.User;
@@ -35,9 +36,9 @@ import static com.morandror.scclient.utils.SharedStrings.ADD_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String ID = "id";
     GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,32 +107,23 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e){}
     }
 
-    private void openUserPage(String userTokenId){
+    private void openUserPage(User user){
         Intent startNewActivity = new Intent(this, home_page_activity2.class);
-        startNewActivity.putExtra(getString(R.string.client_token_id), userTokenId);
+        startNewActivity.putExtra(getString(R.string.user), user);
         startActivity(startNewActivity);
     }
 
     private void getUserFromServer(final GoogleSignInAccount account){
-//        try {
+        try {
             JSONObject jsonObject = new JSONObject(new HashMap<String, String>() {{
                 put("token",account.getIdToken());
             }});
-            //debug//
-            User user = new User(account);
-            addNewUser(user);
-            //debug//
-            /*JsonObjectRequest request = new JsonObjectRequest
+            JsonObjectRequest request = new JsonObjectRequest
                     (GET_USER_URL, jsonObject, new Response.Listener<JSONObject>() {
 
                         @Override
                         public void onResponse(JSONObject response) {
-                            try {
-                                openUserPage((String) response.get(ID));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
+                            openUserPage(gson.fromJson(response.toString(), User.class));
                         }
                     }, new Response.ErrorListener() {
 
@@ -147,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void addNewUser(User newUser) {
@@ -158,12 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onResponse(JSONObject response) {
-                            try {
-                                openUserPage(response.getString("tokenID"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
+                            openUserPage(gson.fromJson(response.toString(), User.class));
                         }
                     }, new Response.ErrorListener() {
 
