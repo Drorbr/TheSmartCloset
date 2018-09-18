@@ -13,6 +13,14 @@ public class Closet extends BaseModel{
     private Date insertDate;
     private Set<User> users;
 
+    public Closet(int id, String name, String description, String location, Date insertDate) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.insertDate = insertDate;
+    }
+
     public Closet() {
     }
 
