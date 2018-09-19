@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu   xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/add_closet"
+        android:title="Add Closet"
+        android:icon="@drawable/add"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/user_settings"
+        android:title="Settings"
+        android:icon="@drawable/settings"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/log_out"
+        android:title="Log Out"
+        android:icon="@drawable/logout3"
+        android:enabled="true"/>
+</menu>

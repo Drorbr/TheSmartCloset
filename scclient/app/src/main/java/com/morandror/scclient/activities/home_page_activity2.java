@@ -1,17 +1,20 @@
 package com.morandror.scclient.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.morandror.scclient.ClosetAdapter;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Closet;
@@ -19,6 +22,10 @@ import com.morandror.scclient.models.User;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.morandror.scclient.activities.MainActivity.mGoogleSignInClient;
 
 public class home_page_activity2 extends AppCompatActivity {
     private User user;
@@ -27,6 +34,7 @@ public class home_page_activity2 extends AppCompatActivity {
     private static RecyclerView recyclerView;
     private static ArrayList<Closet> data;
     static View.OnClickListener myOnClickListener;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +46,54 @@ public class home_page_activity2 extends AppCompatActivity {
         user = (User)getIntent().getSerializableExtra(getString(R.string.user));
         mTextView.setText(String.format(getString(R.string.welcomeActivity2), user.getFirstName(), user.getLastName()));
 
+        recyclerView = findViewById(R.id.my_recycler_view);
+        //debug//
+        user.setClosets(new HashSet<Closet>());
         user.getClosets().add(new Closet(123, "very nice closet", "Winter clothes", "Parent's house", new Date()));
         user.getClosets().add(new Closet(1233, "even nicer closet", "All daily clothes", "My house", new Date()));
         user.getClosets().add(new Closet(12334, "best closet everrr", "The kid's closet", "My house", new Date()));
+        //debug//
 
         if (user.getClosets() == null || user.getClosets().isEmpty()){
             showNoClosets();
         } else {
             showUsersClosets();
         }
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.add_closet:
+//                                switchFragment(0, TAG_FRAGMENT_CALLS);
+                                return true;
+                            case R.id.user_settings:
+//                                switchFragment(1, TAG_FRAGMENT_RECENTS);
+                                return true;
+                            case R.id.log_out:
+//                                switchFragment(2, TAG_FRAGMENT_TRIPS);
+                                mGoogleSignInClient.signOut()
+                                        .addOnCompleteListener( new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Intent goBackHome = new Intent(getApplicationContext(), MainActivity.class);
+                                                startActivity(goBackHome);
+
+                                            }
+                                        });
+                                return true;
+                        }
+                        return false;
+                    }
+                });
     }
 
     private void showUsersClosets() {
         myOnClickListener = new MyOnClickListener(this);
-        recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
@@ -67,7 +109,9 @@ public class home_page_activity2 extends AppCompatActivity {
     }
 
     private void showNoClosets() {
-
+        View emptyView = findViewById(R.id.no_closet_text);
+        recyclerView.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
     }
 
     public static class MyOnClickListener implements View.OnClickListener {
@@ -103,12 +147,12 @@ public class home_page_activity2 extends AppCompatActivity {
 //    }
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.closet_menu, menu);
+        getMenuInflater().inflate(R.menu.user_page_top_menu, menu);
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
