@@ -34,9 +34,10 @@ import java.util.HashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
+import static java.lang.System.exit;
 
 public class MainActivity extends AppCompatActivity {
-    GoogleSignInClient mGoogleSignInClient;
+    static GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
     private Gson gson = new Gson();
 
@@ -168,5 +169,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
