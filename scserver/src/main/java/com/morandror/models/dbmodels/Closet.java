@@ -46,7 +46,7 @@ public class Closet extends BaseModel {
     @ManyToMany(mappedBy = "closets")
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy="closet")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "closet")
     private Set<Item> items = new HashSet<>();
 
     public int getId() {

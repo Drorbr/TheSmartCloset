@@ -23,21 +23,20 @@ DROP TABLE IF EXISTS `item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `item` (
-  `item_id` int(11) NOT NULL,
-  `found_at` varchar(45) NOT NULL,
-  `image` blob,
+  `item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `brand` varchar(255) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `found_at` varchar(255) NOT NULL,
+  `image` tinyblob,
   `recently_used` datetime DEFAULT NULL,
-  `usage` int(11) NOT NULL,
-  `brand` varchar(45) NOT NULL,
-  `color` varchar(45) NOT NULL,
   `size` int(11) NOT NULL,
-  `type` varchar(45) NOT NULL,
-  `closet_id` int(11) NOT NULL,
-  `user_id` datetime NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `usage_number` int(11) NOT NULL,
+  `closet_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
-  KEY `closet_id_idx` (`closet_id`),
-  CONSTRAINT `closet_id` FOREIGN KEY (`closet_id`) REFERENCES `closet` (`closet_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `FKg6o7b6u73radnsfmdjxisqo6y` (`closet_id`),
+  CONSTRAINT `FKg6o7b6u73radnsfmdjxisqo6y` FOREIGN KEY (`closet_id`) REFERENCES `closet` (`closet_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +45,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,'my room',NULL,'0000-00-00 00:00:00',3,'FOX','BLUE',2,'T_Shirt',1,'0000-00-00 00:00:00'),(2,'asd ',NULL,NULL,34,'CASTRO','BLACK',43,'SHIRT',1,'0000-00-00 00:00:00');
+INSERT INTO `item` VALUES (1,'FOX','BLUE','my room',NULL,NULL,2,'T-Shirt',34,1),(2,'FOX','BLUE','my room',NULL,NULL,2,'T-Shirt',34,2);
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -59,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-19 17:08:38
+-- Dump completed on 2018-09-19 20:23:21

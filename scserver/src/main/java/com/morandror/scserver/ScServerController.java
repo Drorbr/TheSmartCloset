@@ -74,13 +74,11 @@ public class ScServerController {
         manager.assignClosetToUser(userHasCloset);
     }
 
-    @RequestMapping(value = "/item/add", method = RequestMethod.POST)
-    public Item addItem(@RequestBody Item newItem) {
+    @RequestMapping(value = "/item/add/{closetID}", method = RequestMethod.POST)
+    public void addItem(@RequestBody Item newItem, @PathVariable("closetID") int closetID) {
         logger.info("Add item post request");
         if(newItem.getId() == 0){
-            return manager.addItem(newItem);
+            manager.addItem(newItem, closetID);
         }
-
-        return null;
     }
 }

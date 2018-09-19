@@ -50,7 +50,7 @@ public class scManager {
         dbHandler.assignClosetToUser(userHasCloset);
     }
 
-    public Item addItem(Item newItem) {
-        return dbHandler.addItem(newItem);
+    public void addItem(Item newItem, int closetID) {
+        dbHandler.addItem(newItem, closetID);
     }
 }

@@ -67,8 +67,15 @@ public class DBHandler {
         userHasClosetRepository.saveAndFlush(userHasCloset);
     }
 
-    public Item addItem(Item newItem) {
+    public void addItem(Item newItem, int closetID) {
         logger.info("Database  - Add new item");
-        return itemRepository.saveAndFlush(newItem);
+        Optional<Closet> closet = getCloset(closetID);
+        if(closet.isPresent()){
+            newItem.setCloset(closet.get());
+            closet.get().getItems().add(newItem);
+            closetRepository.saveAndFlush(closet.get());
+        }
+
+        //return itemRepository.saveAndFlush(newItem);
     }
 }

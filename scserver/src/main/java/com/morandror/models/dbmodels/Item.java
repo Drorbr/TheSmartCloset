@@ -28,7 +28,7 @@ public class Item extends BaseModel {
     private Date recently_used;
 
     @NotNull
-    @Column(name = "usage")
+    @Column(name = "usage_number")
     private int usage;
 
     @NotNull
@@ -48,8 +48,8 @@ public class Item extends BaseModel {
     //@Enumerated(EnumType.STRING)
     private String type;
 
-    @NotNull
-    @ManyToOne
+    //@NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name="closet_id")
     private Closet closet;
