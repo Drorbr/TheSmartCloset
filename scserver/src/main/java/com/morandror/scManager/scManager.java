@@ -2,7 +2,9 @@ package com.morandror.scmanager;
 
 import com.morandror.database.DBHandler;
 import com.morandror.models.dbmodels.Closet;
+import com.morandror.models.dbmodels.Item;
 import com.morandror.models.dbmodels.User;
+import com.morandror.models.dbmodels.UserHasCloset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,8 @@ public class scManager {
         return dbHandler.getAllUsers();
     }
 
-    public void addUser(User newUser) {
-        dbHandler.addUser(newUser);
+    public User addUser(User newUser) {
+        return dbHandler.addUser(newUser);
     }
 
     public User getUser(String token) {
@@ -38,5 +40,17 @@ public class scManager {
 
     public Optional<Closet> getCloset(int closetID) {
         return dbHandler.getCloset(closetID);
+    }
+
+    public Closet addCloset(Closet newCloset) {
+        return dbHandler.addCloset(newCloset);
+    }
+
+    public void assignClosetToUser(UserHasCloset userHasCloset) {
+        dbHandler.assignClosetToUser(userHasCloset);
+    }
+
+    public Item addItem(Item newItem) {
+        return dbHandler.addItem(newItem);
     }
 }

@@ -7,8 +7,6 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-/*@Getter
-@Setter*/
 @Entity
 @Table(name = "user")
 public class User extends BaseModel {
@@ -40,7 +38,7 @@ public class User extends BaseModel {
     private String gender;
 
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(
             name = "user_has_closet",
             joinColumns = { @JoinColumn(name = "user_id") },

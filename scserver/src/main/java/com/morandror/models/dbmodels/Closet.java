@@ -2,8 +2,6 @@ package com.morandror.models.dbmodels;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.morandror.models.BaseModel;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,8 +9,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-/*@Getter
-@Setter*/
 @Entity
 @Table(name = "closet")
 public class Closet extends BaseModel {
@@ -49,6 +45,9 @@ public class Closet extends BaseModel {
     @JsonBackReference
     @ManyToMany(mappedBy = "closets")
     private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy="closet")
+    private Set<Item> items = new HashSet<>();
 
     public int getId() {
         return id;
@@ -112,5 +111,13 @@ public class Closet extends BaseModel {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public Set<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<Item> items) {
+        this.items = items;
     }
 }

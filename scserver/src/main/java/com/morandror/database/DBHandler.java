@@ -2,9 +2,12 @@ package com.morandror.database;
 
 import com.morandror.database.repositories.ClosetRepository;
 import com.morandror.database.repositories.ItemRepository;
+import com.morandror.database.repositories.UserHasClosetRepository;
 import com.morandror.database.repositories.UserRepository;
 import com.morandror.models.dbmodels.Closet;
+import com.morandror.models.dbmodels.Item;
 import com.morandror.models.dbmodels.User;
+import com.morandror.models.dbmodels.UserHasCloset;
 import com.morandror.scmanager.LoggingController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,25 +30,45 @@ public class DBHandler {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private UserHasClosetRepository userHasClosetRepository;
+
     private DBHandler() {
         logger.info("Database connected!");
     }
 
     public User getUser(String token) {
+        logger.info("Database  - Get user by token ID");
         return userRepository.findByTokenID(token);
-//        return userRepository.findById(id).
-//                orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " was not found"));
     }
 
     public List<User> getAllUsers() {
+        logger.info("Database  - Get all users");
         return userRepository.findAll();
     }
 
-    public void addUser(User newUser) {
-        userRepository.save(newUser);
+    public User addUser(User newUser) {
+        logger.info("Database  - Add new user");
+        return userRepository.saveAndFlush(newUser);
     }
 
     public Optional<Closet> getCloset(int closetID) {
+        logger.info("Database  - Get closet by ID");
         return closetRepository.findById(closetID);
+    }
+
+    public Closet addCloset(Closet newCloset) {
+        logger.info("Database  - Add closet");
+        return closetRepository.saveAndFlush(newCloset);
+    }
+
+    public void assignClosetToUser(UserHasCloset userHasCloset) {
+        logger.info("Database  - Assign user to closet - user_has_closet table");
+        userHasClosetRepository.saveAndFlush(userHasCloset);
+    }
+
+    public Item addItem(Item newItem) {
+        logger.info("Database  - Add new item");
+        return itemRepository.saveAndFlush(newItem);
     }
 }

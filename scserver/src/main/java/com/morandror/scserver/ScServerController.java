@@ -2,7 +2,9 @@ package com.morandror.scserver;
 
 import com.morandror.models.TokenID;
 import com.morandror.models.dbmodels.Closet;
+import com.morandror.models.dbmodels.Item;
 import com.morandror.models.dbmodels.User;
+import com.morandror.models.dbmodels.UserHasCloset;
 import com.morandror.scmanager.LoggingController;
 import com.morandror.scmanager.scManager;
 import org.apache.logging.log4j.LogManager;
@@ -36,20 +38,49 @@ public class ScServerController {
 
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
     public User addUser(@RequestBody User newUser) {
+        logger.info("Add user post request");
         if (newUser.getId() == 0) {
-            manager.addUser(newUser);
+            return manager.addUser(newUser);
         }
 
-        return manager.getUser(newUser.getTokenID());
+        return null;
     }
 
     @RequestMapping(value = "/user/get", method = RequestMethod.POST)
     public User getUser(@RequestBody TokenID token) {
+        logger.info("Get user post request");
         return manager.getUser(token.getToken());
     }
 
     @RequestMapping(value = "/closet/get/{id}", method = RequestMethod.GET)
     public Closet getCloset(@PathVariable("id") int closetID) {
+        logger.info("Get closet GET request");
         return manager.getCloset(closetID).get();
+    }
+
+    @RequestMapping(value = "/closet/add", method = RequestMethod.POST)
+    public Closet addCloset(@RequestBody Closet newCloset) {
+        logger.info("Add closet post request");
+        if (newCloset.getId() == 0) {
+            return manager.addCloset(newCloset);
+        }
+
+        return null;
+    }
+
+    @RequestMapping(value = "/user/AssignCloset/{userId}/{closetId}", method = RequestMethod.GET)
+    public void assignClosetToUser(@PathVariable("userId") int userId, @PathVariable("closetId") int closetID) {
+        UserHasCloset userHasCloset = new UserHasCloset(userId, closetID);
+        manager.assignClosetToUser(userHasCloset);
+    }
+
+    @RequestMapping(value = "/item/add", method = RequestMethod.POST)
+    public Item addItem(@RequestBody Item newItem) {
+        logger.info("Add item post request");
+        if(newItem.getId() == 0){
+            return manager.addItem(newItem);
+        }
+
+        return null;
     }
 }
