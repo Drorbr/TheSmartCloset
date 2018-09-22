@@ -69,7 +69,8 @@ public class home_page_activity2 extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.add_closet:
-//                                switchFragment(0, TAG_FRAGMENT_CALLS);
+                                Intent startNewActivity = new Intent(getBaseContext(), AddClosetActivity.class);
+                                startActivity(startNewActivity);
                                 return true;
                             case R.id.user_settings:
 //                                switchFragment(1, TAG_FRAGMENT_RECENTS);

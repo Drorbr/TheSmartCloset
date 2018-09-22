@@ -8,4 +8,10 @@
     <string name="welcomeActivity2">Welcome %s %s</string>
     <string name="server_ip">192.168.1.6</string>
     <string name="no_closet_available">You don\'t have any closets registered yet</string>
+    <string name="add_closet_title">Please insert your closet\'s details</string>
+    <string name="insert_closet_name">Name</string>
+    <string name="insert_rfid_scanner">RFID scanner code</string>
+    <string name="insert_location">Location</string>
+    <string name="insert_description">Description</string>
+    <string name="submit">Submit</string>
 </resources>
