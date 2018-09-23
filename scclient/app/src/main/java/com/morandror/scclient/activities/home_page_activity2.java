@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.morandror.scclient.ClosetAdapter;
+import com.morandror.scclient.adapters.ClosetAdapter;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Closet;
 import com.morandror.scclient.models.User;
@@ -23,7 +23,6 @@ import com.morandror.scclient.models.User;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 import static com.morandror.scclient.activities.MainActivity.mGoogleSignInClient;
 
@@ -35,7 +34,7 @@ public class home_page_activity2 extends AppCompatActivity {
     private static ArrayList<Closet> data;
     static View.OnClickListener myOnClickListener;
     private BottomNavigationView bottomNavigationView;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +75,6 @@ public class home_page_activity2 extends AppCompatActivity {
 //                                switchFragment(1, TAG_FRAGMENT_RECENTS);
                                 return true;
                             case R.id.log_out:
-//                                switchFragment(2, TAG_FRAGMENT_TRIPS);
                                 mGoogleSignInClient.signOut()
                                         .addOnCompleteListener( new OnCompleteListener<Void>() {
                                             @Override
@@ -125,27 +123,8 @@ public class home_page_activity2 extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            //enter closet
+            System.out.println(v.getId());
         }
-
-//        private void removeItem(View v) {
-//            int selectedItemPosition = recyclerView.getChildPosition(v);
-//            RecyclerView.ViewHolder viewHolder
-//                    = recyclerView.findViewHolderForPosition(selectedItemPosition);
-//            TextView textViewName
-//                    = (TextView) viewHolder.itemView.findViewById(R.id.textViewName);
-//            String selectedName = (String) textViewName.getText();
-//            int selectedItemId = -1;
-//            for (int i = 0; i < MyData.nameArray.length; i++) {
-//                if (selectedName.equals(MyData.nameArray[i])) {
-//                    selectedItemId = MyData.id_[i];
-//                }
-//            }
-//            removedItems.add(selectedItemId);
-//            data.remove(selectedItemPosition);
-//            adapter.notifyItemRemoved(selectedItemPosition);
-//        }
-//    }
     }
 
     /*@Override
@@ -167,17 +146,5 @@ public class home_page_activity2 extends AppCompatActivity {
             }
         }*/
         return true;
-    }
-
-    private void addRemovedItemToList(){
-        int addItemAtListPosition = 3;
-//        data.add(addItemAtListPosition, new DataModel(
-//                MyData.nameArray[removedItems.get(0)],
-//                MyData.versionArray[removedItems.get(0)],
-//                MyData.id_[removedItems.get(0)],
-//                MyData.drawableArray[removedItems.get(0)]
-//        ));
-//        adapter.notifyItemInserted(addItemAtListPosition);
-//        removedItems.remove(0);
     }
 }
