@@ -7,6 +7,7 @@ public class SharedStrings {
     public static final String USER_URL = SERVER_URL + "/user";
     public static final String GET_USER_URL = USER_URL + "/get";
     public static final String ADD_USER_URL = USER_URL + "/add";
+    public static final String ASSIGN_CLOSET_TO_USER_URL = USER_URL + "/AssignCloset/%s/%s";
     public static final String CLOSET_URL = SERVER_URL+ "/closet";
     public static final String ADD_CLOSET_URL = CLOSET_URL + "/add";
 
