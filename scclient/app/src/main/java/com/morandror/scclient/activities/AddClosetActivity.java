@@ -1,32 +1,42 @@
 package com.morandror.scclient.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Closet;
+import com.morandror.scclient.models.User;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_CLOSET_URL;
+import static com.morandror.scclient.utils.SharedStrings.ASSIGN_CLOSET_TO_USER_URL;
 
 public class AddClosetActivity extends AppCompatActivity {
     ProgressBar progressBar;
     private TextView errorText;
+    private Gson gson = new Gson();
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +44,11 @@ public class AddClosetActivity extends AppCompatActivity {
         setContentView(R.layout.add_closet_activity);
         progressBar = findViewById(R.id.progressBar_cyclic);
         errorText = findViewById(R.id.add_closet_error_text);
+        user = (User)getIntent().getSerializableExtra(getString(R.string.user));
     }
 
     protected void submitInfo(View button){
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         errorText.setVisibility(View.INVISIBLE);
 
         boolean foundError = false;
@@ -55,7 +66,27 @@ public class AddClosetActivity extends AppCompatActivity {
 
         if (!foundError)
             injectClosetToServer(etAndStringDict);
-        progressBar.setVisibility(View.GONE);
+        removeProgressBar();
+    }
+
+    private void showProgressBar() {
+        setProgressBarVisibility1(View.VISIBLE);
+    }
+
+
+    private void removeProgressBar() {
+        setProgressBarVisibility1(View.VISIBLE);
+    }
+
+    private void setProgressBarVisibility1(int visibility) {
+        ViewGroup parent = (ViewGroup) progressBar.getParent();
+        int index = parent.indexOfChild(progressBar);
+        parent.removeView(progressBar);
+        ProgressBar newPB = new ProgressBar(this);
+        newPB.setVisibility(visibility);
+        newPB.setPadding(0, (int) getResources().getDimension(R.dimen.progressbar_top_padding), 0, 0);
+        progressBar = (ProgressBar)getLayoutInflater().inflate(R.layout.mypb, parent, false);
+        parent.addView(newPB, index);
     }
 
     private LinkedHashMap<EditText, String> initEtAndStringDict() {
@@ -79,16 +110,18 @@ public class AddClosetActivity extends AppCompatActivity {
 
                 @Override
                 public void onResponse(JSONObject response) {
-                    //goBack
+                    System.out.println(getString(R.string.add_closet_success));
+                    Closet newCloset = gson.fromJson(response.toString(), Closet.class);
+                    assignClosetToUser(newCloset);
                 }
             }, new Response.ErrorListener() {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    String errorStr = "Failed to add new closet - " + error.toString();
-                    System.out.println(errorStr);
+                    System.out.println("Failed to add new closet - " + error.toString());
+                    removeProgressBar();
                     errorText.setVisibility(View.VISIBLE);
-                    errorText.setText(errorStr);
+                    errorText.setText(R.string.error_insert_closet);
                 }
             });
 
@@ -98,6 +131,30 @@ public class AddClosetActivity extends AppCompatActivity {
         } catch (JSONException | JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void assignClosetToUser(Closet newCloset) {
+        if (user.getClosets() == null)
+            user.setClosets(new HashSet<Closet>());
+        user.getClosets().add(newCloset);
+        StringRequest request = new StringRequest(String.format(ASSIGN_CLOSET_TO_USER_URL, user.getId(), newCloset.getId()),
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response){
+                        System.out.println("Assign closet to user succeeded");
+                        Intent startNewActivity = new Intent(getBaseContext(), home_page_activity2.class);
+                        startNewActivity.putExtra(getString(R.string.user), user);
+                        startActivity(startNewActivity);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Failed to assign closet to user");
+                    }
+        });
+
+        RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
     }
 
     private Closet getClosetFromDict(LinkedHashMap<EditText, String> etAndStringDict) {

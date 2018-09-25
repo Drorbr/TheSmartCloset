@@ -89,4 +89,9 @@ public class Item extends BaseModel {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return this.brand;
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -75,9 +76,13 @@ public class MainActivity extends AppCompatActivity {
             getUserFromServer(account);
         } else {
             //show sign in button
-            SignInButton signInButton = findViewById(R.id.sign_in_button);
-            signInButton.setVisibility(View.VISIBLE);
+            showSignInButton();
         }
+    }
+
+    private void showSignInButton() {
+        SignInButton signInButton = findViewById(R.id.sign_in_button);
+        signInButton.setVisibility(View.VISIBLE);
     }
 
     private void signIn() {
@@ -157,16 +162,17 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            System.out.println("Failed to add new user");
+                            String message = "Failed to add new user";
+                            System.out.println(message + " error, " + error.getMessage());
+                            Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+                            showSignInButton();
                         }
                     });
 
 
             // Add the request to the RequestQueue.
             RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
+        } catch (JSONException | JsonProcessingException e) {
             e.printStackTrace();
         }
     }

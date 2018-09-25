@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:minHeight="50dp"
         android:minWidth="50dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         style="Widget.ProgressBar.Large.Inverse"
         android:paddingTop="15dp"
         android:layout_gravity="center"

@@ -15,4 +15,11 @@
     <string name="insert_description">Description</string>
     <string name="submit">Submit</string>
     <string name="closet">closet</string>
+    <string name="image_description">image_description</string>
+    <string name="item_brand_key">Brand</string>
+    <string name="item_usage_key">Usage</string>
+    <string name="item_recentlyUsed_key">Recently used</string>
+    <string name="item">item</string>
+    <string name="error_insert_closet">Something went wrong, the closet wat not registered</string>
+    <string name="add_closet_success">Closet added successfully</string>
 </resources>

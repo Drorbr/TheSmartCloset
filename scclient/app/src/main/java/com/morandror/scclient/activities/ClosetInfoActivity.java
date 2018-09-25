@@ -1,8 +1,10 @@
 package com.morandror.scclient.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -27,7 +29,7 @@ public class ClosetInfoActivity extends AppCompatActivity {
     ExpandableListView expListView;
     ExpandableListAdapter listAdapter;
     List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    HashMap<String, List<Item>> listDataChild;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +55,22 @@ public class ClosetInfoActivity extends AppCompatActivity {
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
 
         expListView.setAdapter(listAdapter);
+
+        initOnClicks();
+    }
+
+    private void initOnClicks() {
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view,
+                                        int groupPosition, int childPosition, long l) {
+                Item item = (Item) listAdapter.getChild(groupPosition,childPosition);
+                Intent newIntent = new Intent(ClosetInfoActivity.this, ItemInfoPopUp.class);
+                newIntent.putExtra(getString(R.string.item), item);
+                startActivity(newIntent);
+                return false;
+            }
+        });
     }
 
     private List<Item> getClosetItems() {
@@ -71,8 +89,8 @@ public class ClosetInfoActivity extends AppCompatActivity {
 
         for (Item item : closetItems){
             if (!listDataChild.containsKey(item.getType()))
-                listDataChild.put(item.getType(), new ArrayList<String>());
-            listDataChild.get(item.getType()).add(item.getBrand());
+                listDataChild.put(item.getType(), new ArrayList<Item>());
+            listDataChild.get(item.getType()).add(item);
         }
     }
 

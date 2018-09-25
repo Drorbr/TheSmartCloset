@@ -21,8 +21,6 @@ import com.morandror.scclient.models.Closet;
 import com.morandror.scclient.models.User;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 
 import static com.morandror.scclient.activities.MainActivity.mGoogleSignInClient;
 
@@ -47,10 +45,10 @@ public class home_page_activity2 extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.my_recycler_view);
         //debug//
-        user.setClosets(new HashSet<Closet>());
+        /*user.setClosets(new HashSet<Closet>());
         user.getClosets().add(new Closet(123, "very nice closet", "Winter clothes", "Parent's house", new Date()));
         user.getClosets().add(new Closet(1233, "even nicer closet", "All daily clothes", "My house", new Date()));
-        user.getClosets().add(new Closet(12334, "best closet everrr", "The kid's closet", "My house", new Date()));
+        user.getClosets().add(new Closet(12334, "best closet everrr", "The kid's closet", "My house", new Date()));*/
         //debug//
 
         if (user.getClosets() == null || user.getClosets().isEmpty()){
@@ -69,9 +67,10 @@ public class home_page_activity2 extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.add_closet:
                                 Intent startNewActivity = new Intent(getBaseContext(), AddClosetActivity.class);
+                                startNewActivity.putExtra(getString(R.string.user), user);
                                 startActivity(startNewActivity);
                                 return true;
-                            case R.id.user_settings:
+                            case R.id.user_stats:
 //                                switchFragment(1, TAG_FRAGMENT_RECENTS);
                                 return true;
                             case R.id.log_out:

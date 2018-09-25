@@ -8,9 +8,9 @@
         android:enabled="true"/>
 
     <item
-        android:id="@+id/user_settings"
-        android:title="Settings"
-        android:icon="@drawable/settings"
+        android:id="@+id/user_stats"
+        android:title="Statistics"
+        android:icon="@drawable/stats"
         android:enabled="true"/>
 
     <item
