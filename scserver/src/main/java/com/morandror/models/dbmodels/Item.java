@@ -27,6 +27,9 @@ public class Item extends BaseModel {
     @Column(name = "recently_used")
     private Date recently_used;
 
+    @Column(name = "insert_date")
+    private Date insert_date;
+
     @NotNull
     @Column(name = "usage_number")
     private int usage;
@@ -132,5 +135,13 @@ public class Item extends BaseModel {
 
     public void setCloset(Closet closet) {
         this.closet = closet;
+    }
+
+    public Date getInsert_date() {
+        return insert_date;
+    }
+
+    public void setInsert_date(Date insert_date) {
+        this.insert_date = insert_date;
     }
 }

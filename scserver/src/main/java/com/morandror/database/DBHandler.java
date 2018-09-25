@@ -12,6 +12,8 @@ import com.morandror.scmanager.LoggingController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -77,5 +79,44 @@ public class DBHandler {
         }
 
         //return itemRepository.saveAndFlush(newItem);
+    }
+
+    public String getFavoriteColor(int closetID) {
+        String res = itemRepository.findMostFavoriteColor(closetID);
+        logger.info("Database  - The favorite color in closet id " + closetID + " is " + res);
+        return res;
+    }
+
+    public Item getFavoriteItem(int closetID) {
+        Item item = itemRepository.findMostFavoriteItem(closetID);
+        logger.info("Database  - The favorite item in closet id " + closetID + " is item.id = " + item.getId());
+        return item;
+    }
+
+    public List<Item> getLast7DaysItems(int closetID) {
+        List<Item> list =  itemRepository.getLastUsed(closetID);
+        return list;
+    }
+
+    public List<Item> getNewestItems(int closetID) {
+        return itemRepository.getRecentlyAdded(closetID);
+    }
+
+    public ResponseEntity<?> deleteItem(int itemID) {
+        return itemRepository.findById(itemID).map(item -> {
+            itemRepository.delete(item);
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("Item ID " + itemID + " not found"));
+    }
+
+
+    public ResponseEntity<?> deleteCloset(int closetID) {
+        userHasClosetRepository.deleteByClosetID(closetID);
+        logger.info("Database - deleted from user_has_closet all rows with closet_id " + closetID);
+        return closetRepository.findById(closetID).map(closet -> {
+            closetRepository.delete(closet);
+            logger.info("Database - deleted closet id " + closetID + " from 'closet'");
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("Closet ID " + closetID + " not found"));
     }
 }

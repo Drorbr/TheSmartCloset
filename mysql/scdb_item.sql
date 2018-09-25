@@ -28,15 +28,16 @@ CREATE TABLE `item` (
   `color` varchar(255) NOT NULL,
   `found_at` varchar(255) NOT NULL,
   `image` tinyblob,
-  `recently_used` datetime DEFAULT NULL,
+  `recently_used` date DEFAULT NULL,
   `size` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `usage_number` int(11) NOT NULL,
   `closet_id` int(11) DEFAULT NULL,
+  `insert_date` date NOT NULL,
   PRIMARY KEY (`item_id`),
   KEY `FKg6o7b6u73radnsfmdjxisqo6y` (`closet_id`),
   CONSTRAINT `FKg6o7b6u73radnsfmdjxisqo6y` FOREIGN KEY (`closet_id`) REFERENCES `closet` (`closet_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +46,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,'FOX','BLUE','my room',NULL,NULL,2,'T-Shirt',34,1),(2,'FOX','BLUE','my room',NULL,NULL,2,'T-Shirt',34,2);
+INSERT INTO `item` VALUES (1,'FOX','BLUE','my room',NULL,'2018-09-20',2,'T-Shirt',34,1,'2018-09-20'),(3,'sdf','BLACK','sdf',NULL,'2018-09-24',3,'sdf',23,1,'2018-09-24');
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-19 20:23:21
+-- Dump completed on 2018-09-25 20:03:37
