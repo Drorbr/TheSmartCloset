@@ -4,16 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.CompactStringObjectMap;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,7 +27,6 @@ import com.morandror.scclient.R;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 import com.morandror.scclient.models.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,12 +34,13 @@ import java.util.HashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
-import static java.lang.System.exit;
 
 public class MainActivity extends AppCompatActivity {
     static GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
     private Gson gson = new Gson();
+    ProgressBar progressBar;
+    ViewGroup pbParent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        progressBar = findViewById(R.id.progressBarDummyMain);
+        pbParent = (ViewGroup)progressBar.getParent();
     }
 
     @Override
@@ -76,8 +78,22 @@ public class MainActivity extends AppCompatActivity {
             getUserFromServer(account);
         } else {
             //show sign in button
+            removeProgressBar();
             showSignInButton();
         }
+    }
+
+    private void showProgressBar() {
+        setProgressBarVisibility1(View.VISIBLE);
+    }
+
+
+    private void removeProgressBar() {
+        setProgressBarVisibility1(View.GONE);
+    }
+
+    private void setProgressBarVisibility1(int visibility) {
+        progressBar.setVisibility(visibility);
     }
 
     private void showSignInButton() {
@@ -86,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        showProgressBar();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -166,11 +183,11 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println(message + " error, " + error.getMessage());
                             Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
                             showSignInButton();
+                            removeProgressBar();
                         }
                     });
 
 
-            // Add the request to the RequestQueue.
             RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
         } catch (JSONException | JsonProcessingException e) {
             e.printStackTrace();

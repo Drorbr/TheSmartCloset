@@ -34,6 +34,8 @@ import static com.morandror.scclient.utils.SharedStrings.ASSIGN_CLOSET_TO_USER_U
 
 public class AddClosetActivity extends AppCompatActivity {
     ProgressBar progressBar;
+    ViewGroup parent;
+    int index;
     private TextView errorText;
     private Gson gson = new Gson();
     User user;
@@ -42,8 +44,10 @@ public class AddClosetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_closet_activity);
-        progressBar = findViewById(R.id.progressBar_cyclic);
+        progressBar = findViewById(R.id.progressBar_cyclic2);
         errorText = findViewById(R.id.add_closet_error_text);
+        parent = (ViewGroup) errorText.getParent();
+        index = parent.indexOfChild(errorText);
         user = (User)getIntent().getSerializableExtra(getString(R.string.user));
     }
 
@@ -66,7 +70,6 @@ public class AddClosetActivity extends AppCompatActivity {
 
         if (!foundError)
             injectClosetToServer(etAndStringDict);
-        removeProgressBar();
     }
 
     private void showProgressBar() {
@@ -75,18 +78,16 @@ public class AddClosetActivity extends AppCompatActivity {
 
 
     private void removeProgressBar() {
-        setProgressBarVisibility1(View.VISIBLE);
+        parent.removeView(progressBar);
     }
 
     private void setProgressBarVisibility1(int visibility) {
-        ViewGroup parent = (ViewGroup) progressBar.getParent();
-        int index = parent.indexOfChild(progressBar);
-        parent.removeView(progressBar);
         ProgressBar newPB = new ProgressBar(this);
         newPB.setVisibility(visibility);
         newPB.setPadding(0, (int) getResources().getDimension(R.dimen.progressbar_top_padding), 0, 0);
-        progressBar = (ProgressBar)getLayoutInflater().inflate(R.layout.mypb, parent, false);
+        newPB = (ProgressBar)getLayoutInflater().inflate(R.layout.mypb, parent, false);
         parent.addView(newPB, index);
+        progressBar = newPB;
     }
 
     private LinkedHashMap<EditText, String> initEtAndStringDict() {
@@ -160,10 +161,10 @@ public class AddClosetActivity extends AppCompatActivity {
     private Closet getClosetFromDict(LinkedHashMap<EditText, String> etAndStringDict) {
         Closet closet = new Closet();
 
-        closet.setDescription(etAndStringDict.get((EditText)findViewById(R.id.closet_description_et)));
-        closet.setName(etAndStringDict.get((EditText)findViewById(R.id.closet_name_et)));
-        closet.setRfidScanner(etAndStringDict.get((EditText)findViewById(R.id.closet_rfid_et)));
-        closet.setLocation(etAndStringDict.get((EditText)findViewById(R.id.closet_location_et)));
+        closet.setDescription(etAndStringDict.get(findViewById(R.id.closet_description_et)));
+        closet.setName(etAndStringDict.get(findViewById(R.id.closet_name_et)));
+        closet.setRfidScanner(etAndStringDict.get(findViewById(R.id.closet_rfid_et)));
+        closet.setLocation(etAndStringDict.get(findViewById(R.id.closet_location_et)));
         closet.setInsertDate(new Date());
 
         return closet;
