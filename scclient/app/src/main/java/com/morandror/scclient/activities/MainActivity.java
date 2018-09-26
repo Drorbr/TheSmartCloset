@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
+import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class MainActivity extends AppCompatActivity {
     static GoogleSignInClient mGoogleSignInClient;
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+            request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
         } catch (Exception e) {
             e.printStackTrace();

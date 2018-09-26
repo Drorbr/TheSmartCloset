@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.volley.Request;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -31,6 +34,9 @@ import java.util.LinkedHashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_CLOSET_URL;
 import static com.morandror.scclient.utils.SharedStrings.ASSIGN_CLOSET_TO_USER_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
+import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class AddClosetActivity extends AppCompatActivity {
     ProgressBar progressBar;
@@ -39,6 +45,10 @@ public class AddClosetActivity extends AppCompatActivity {
     private TextView errorText;
     private Gson gson = new Gson();
     User user;
+    RadioButton newClosetRdBtn;
+    RadioButton existingClosetRdBtn;
+    LinkedHashMap<EditText, String> etAndStringDict;
+    EditText closetIdEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,27 +59,96 @@ public class AddClosetActivity extends AppCompatActivity {
         parent = (ViewGroup) errorText.getParent();
         index = parent.indexOfChild(errorText);
         user = (User)getIntent().getSerializableExtra(getString(R.string.user));
+        newClosetRdBtn = findViewById(R.id.rdBtnNew);
+        existingClosetRdBtn = findViewById(R.id.rdBtnExisting);
+        etAndStringDict = initEtAndStringDict();
+        closetIdEt = findViewById(R.id.closet_id_et);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        newClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    manageNewClosetTextLines(true);
+                    closetIdEt.setEnabled(false);
+                }
+            }
+        });
+
+        existingClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    manageNewClosetTextLines(false);
+                    closetIdEt.setEnabled(true);
+                }
+            }
+        });
+    }
+
+    private void manageNewClosetTextLines(boolean enabled){
+        for (EditText et : etAndStringDict.keySet()){
+            et.setEnabled(enabled);
+        }
     }
 
     protected void submitInfo(View button){
+        boolean foundError = false;
+        String emptyErr = "Value can't be empty";
+
         showProgressBar();
         errorText.setVisibility(View.INVISIBLE);
-
-        boolean foundError = false;
-        LinkedHashMap<EditText, String> etAndStringDict = initEtAndStringDict();
-
-        for (EditText et : etAndStringDict.keySet()){
-            String value = et.getText().toString();
+        if (existingClosetRdBtn.isChecked()) {
+            String value = closetIdEt.getText().toString();
             if (TextUtils.isEmpty(value)){
                 foundError = true;
-                et.setError("Value can't be empty");
-            } else {
-                etAndStringDict.put(et, value);
+                closetIdEt.setError(emptyErr);
+            } else{
+                getClosetAndAssign(value);
             }
-        }
+        } else {
 
-        if (!foundError)
-            injectClosetToServer(etAndStringDict);
+            for (EditText et : etAndStringDict.keySet()) {
+                String value = et.getText().toString();
+                if (TextUtils.isEmpty(value)) {
+                    foundError = true;
+                    et.setError(emptyErr);
+                } else {
+                    etAndStringDict.put(et, value);
+                }
+            }
+
+            if (!foundError)
+                injectClosetToServer();
+        }
+        if (foundError)
+            removeProgressBar();
+    }
+
+    private void getClosetAndAssign(final String closetId) {
+        JsonObjectRequest request = new JsonObjectRequest
+                (String.format(GET_CLOSET_URL, closetId), null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        assignClosetToUser(gson.fromJson(response.toString(), Closet.class));
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Failed to get closet with id: " + closetId + " from server");
+                        removeProgressBar();
+                        errorText.setVisibility(View.VISIBLE);
+                        errorText.setText(R.string.error_assign_closet);
+                    }
+                });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
     }
 
     private void showProgressBar() {
@@ -101,7 +180,7 @@ public class AddClosetActivity extends AppCompatActivity {
         return etAndStringDict;
     }
 
-    private void injectClosetToServer(LinkedHashMap<EditText, String> etAndStringDict) {
+    private void injectClosetToServer() {
         Closet closet = getClosetFromDict(etAndStringDict);
 
         try {

@@ -22,4 +22,6 @@
     <string name="item">item</string>
     <string name="error_insert_closet">Something went wrong, the closet wat not registered</string>
     <string name="add_closet_success">Closet added successfully</string>
+    <string name="insert_closet_id">ID</string>
+    <string name="error_assign_closet">something went wrong, failed to assign existing closet</string>
 </resources>
