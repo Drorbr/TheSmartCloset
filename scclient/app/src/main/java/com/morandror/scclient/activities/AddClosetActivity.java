@@ -123,7 +123,6 @@ public class AddClosetActivity extends AppCompatActivity {
                     removeProgressBar();
                     errorText.setVisibility(View.VISIBLE);
                     errorText.setText(R.string.error_insert_closet);
-                    
                 }
             });
 

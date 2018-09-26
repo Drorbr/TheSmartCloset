@@ -8,4 +8,5 @@
     <dimen name="item_image_width">22px</dimen>
     <dimen name="item_image_height">80px</dimen>
     <dimen name="progressbar_top_padding">15dp</dimen>
+    <dimen name="trash_icon_padding">20dp</dimen>
 </resources>

@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -157,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-
-            // Add the request to the RequestQueue.
             RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
         } catch (Exception e) {
             e.printStackTrace();

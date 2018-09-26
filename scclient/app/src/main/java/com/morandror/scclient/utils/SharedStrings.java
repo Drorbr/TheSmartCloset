@@ -10,5 +10,6 @@ public class SharedStrings {
     public static final String ASSIGN_CLOSET_TO_USER_URL = USER_URL + "/AssignCloset/%s/%s";
     public static final String CLOSET_URL = SERVER_URL+ "/closet";
     public static final String ADD_CLOSET_URL = CLOSET_URL + "/add";
+    public static final String DELETE_CLOSET_URL = CLOSET_URL + "/delete/%s";
 
 }
