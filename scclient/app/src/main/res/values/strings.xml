@@ -24,4 +24,11 @@
     <string name="add_closet_success">Closet added successfully</string>
     <string name="insert_closet_id">ID</string>
     <string name="error_assign_closet">something went wrong, failed to assign existing closet</string>
+    <string name="delete">Delete</string>
+    <string name="stats_title">Statistics</string>
+    <string name="most_used_key">Most Used Item</string>
+    <string name="dummy">None</string>
+    <string name="most_used_more">more...</string>
+    <string name="favorite_color_key">Favorite Color</string>
+    <string name="stats">stats</string>
 </resources>

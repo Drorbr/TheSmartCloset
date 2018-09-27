@@ -13,25 +13,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
 import com.morandror.scclient.adapters.ClosetAdapter;
 import com.morandror.scclient.R;
+import com.morandror.scclient.adapters.DeleteItemListener;
 import com.morandror.scclient.adapters.deleteClosetListener;
 import com.morandror.scclient.models.Closet;
+import com.morandror.scclient.models.Item;
+import com.morandror.scclient.models.Statistics;
 import com.morandror.scclient.models.User;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.morandror.scclient.activities.MainActivity.mGoogleSignInClient;
 import static com.morandror.scclient.utils.SharedStrings.DELETE_CLOSET_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_STATS;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
+import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
-public class home_page_activity2 extends AppCompatActivity implements deleteClosetListener {
+public class home_page_activity2 extends AppCompatActivity implements deleteClosetListener/*, DeleteItemListener */{
     private User user;
     private static ClosetAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -39,37 +52,23 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
     private static ArrayList<Closet> data;
     static View.OnClickListener myOnClickListener;
     private BottomNavigationView bottomNavigationView;
-    public Context _context;
-    
+    private Gson gson;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page_activity2);
-        _context = this;
-        final TextView mTextView = findViewById(R.id.welcomeSign);
 
         user = (User)getIntent().getSerializableExtra(getString(R.string.user));
+
+        final TextView mTextView = findViewById(R.id.welcomeSign);
         mTextView.setText(String.format(getString(R.string.welcomeActivity2), user.getFirstName(), user.getLastName()));
 
         recyclerView = findViewById(R.id.my_recycler_view);
-        //debug//
-        /*user.setClosets(new HashSet<Closet>());
-        user.getClosets().add(new Closet(123, "very nice closet", "Winter clothes", "Parent's house", new Date()));
-        user.getClosets().add(new Closet(1233, "even nicer closet", "All daily clothes", "My house", new Date()));
-        user.getClosets().add(new Closet(12334, "best closet everrr", "The kid's closet", "My house", new Date()));*/
-        //debug//
 
         handleClosets();
-        /*
-        if (user.getClosets() == null || user.getClosets().isEmpty()){
-            showNoClosets();
-        } else {
-            showUsersClosets();
-        }*/
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -81,7 +80,17 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
                                 startActivity(startNewActivity);
                                 return true;
                             case R.id.user_stats:
-//                                switchFragment(1, TAG_FRAGMENT_RECENTS);
+//                                startStatsActivity();
+                                Item item1 = new Item("Home", null, new Date(), 42, "Zara", "Blue", 2, "Pants");
+                                Item item2 = new Item("Home", null, new Date(), 23, "Pull n' Bear", "Green", 3, "Shirt");
+                                ArrayList<Item> list = new ArrayList<>();
+                                list.add(item1);
+                                list.add(item2);
+                                Statistics debugStats = new Statistics(item1,  "Blue", list, list);
+
+                                Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
+                                statsIntent.putExtra(getString(R.string.stats),debugStats);
+                                startActivity(statsIntent);
                                 return true;
                             case R.id.log_out:
                                 mGoogleSignInClient.signOut()
@@ -98,6 +107,43 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
                         return false;
                     }
                 });
+    }
+
+    private void startStatsActivity() {
+
+        //debug
+        Item item1 = new Item("Home", null, new Date(), 42, "Zara", "Blue", 2, "Pants");
+        Item item2 = new Item("Home", null, new Date(), 23, "Pull n' Bear", "Green", 3, "Shirt");
+        ArrayList<Item> list = new ArrayList<>();
+        list.add(item1);
+        list.add(item2);
+        Statistics debugStats = new Statistics(item1,  "Blue", list, list);
+
+        Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
+        statsIntent.putExtra(getString(R.string.stats),debugStats);
+        startActivity(statsIntent);
+        //debug
+        /*
+        JsonObjectRequest request = new JsonObjectRequest
+                (String.format(GET_USER_STATS, user.getId()), null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
+                        statsIntent.putExtra(getString(R.string.stats), gson.fromJson(response.toString(), Statistics.class));
+                        startActivity(statsIntent);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Failed to get statistics, error: " + error.toString());
+                        Toast.makeText(getBaseContext(), "Failed to get user statistics", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);*/
     }
 
     private void handleClosets() {
@@ -136,6 +182,11 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
         user.getClosets().remove(closet);
         handleClosets();
     }
+/*
+    @Override
+    public void onItemDelete(Item item) {
+
+    }*/
 
     public static class MyOnClickListener implements View.OnClickListener {
 

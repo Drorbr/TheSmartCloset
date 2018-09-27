@@ -23,6 +23,7 @@
         <activity android:name=".activities.AddClosetActivity"/>
         <activity android:name=".activities.ClosetInfoActivity" />
         <activity android:name=".activities.ItemInfoPopUp" />
+        <activity android:name=".activities.StatsActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"

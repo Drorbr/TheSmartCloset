@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
                             showSignInButton();
                             removeProgressBar();
+                            mGoogleSignInClient.signOut();
                         }
                     });
 

@@ -2,12 +2,15 @@ package com.morandror.scclient.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Item;
 
@@ -38,10 +41,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition,
+    public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-
-        final String childText = getChild(groupPosition, childPosition).toString();
+        final Item item = (Item)getChild(groupPosition, childPosition);
+        final String childText = item.toString();
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -53,6 +56,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 .findViewById(R.id.lblListItem);
 
         txtListChild.setText(childText);
+/*
+        ImageButton delBtn = convertView.findViewById(R.id.del_item_btn);
+        delBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    System.out.println("Delete item: " + item.toJson());
+                } catch (JsonProcessingException e) {
+                    System.out.println("item " + item.getBrand() + " deleted");
+                }
+                _listDataChild.get(_listDataHeader.get(groupPosition)).remove(item);
+                notifyDataSetChanged();
+            }
+        });*/
+
         return convertView;
     }
 
@@ -80,6 +98,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
+
         String headerTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
