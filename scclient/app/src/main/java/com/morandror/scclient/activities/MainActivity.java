@@ -35,6 +35,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_USER_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_KEY;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
@@ -58,14 +59,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Configure sign-in to request the User's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
 
-        // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         progressBar = findViewById(R.id.progressBarDummyMain);
         pbParent = (ViewGroup)progressBar.getParent();
@@ -74,13 +72,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check for existing Google Sign In account, if the User is already signed in
-        // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
         if (account != null) {
             getUserFromServer(account);
         } else {
-            //show sign in button
             removeProgressBar();
             showSignInButton();
         }
@@ -140,65 +136,76 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getUserFromServer(final GoogleSignInAccount account){
-        try {
-            JSONObject jsonObject = new JSONObject(new HashMap<String, String>() {{
-                put("token",account.getIdToken());
-            }});
-            JsonObjectRequest request = new JsonObjectRequest
-                    (GET_USER_URL, jsonObject, new Response.Listener<JSONObject>() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject jsonObject = new JSONObject(new HashMap<String, String>() {{
+                        put(GET_USER_KEY,account.getEmail());
+                    }});
+                    JsonObjectRequest request = new JsonObjectRequest
+                            (GET_USER_URL, jsonObject, new Response.Listener<JSONObject>() {
 
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            openUserPage(gson.fromJson(response.toString(), User.class));
-                        }
-                    }, new Response.ErrorListener() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    openUserPage(gson.fromJson(response.toString(), User.class));
+                                }
+                            }, new Response.ErrorListener() {
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            User newUser = new User(account);
-                            addNewUser(newUser);
-                        }
-                    });
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    User newUser = new User(account);
+                                    addNewUser(newUser);
+                                }
+                            });
 
-            request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                    RequestQueueSingleton.getInstance(getBaseContext()).getRequestQueue().add(request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
-    private void addNewUser(User newUser) {
-        try {
-            JSONObject newUserObj = new JSONObject(newUser.toJson());
-            JsonObjectRequest request = new JsonObjectRequest(
-                    ADD_USER_URL, newUserObj, new Response.Listener<JSONObject>() {
+    private void addNewUser(final User newUser) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject newUserObj = new JSONObject(newUser.toJson());
+                    JsonObjectRequest request = new JsonObjectRequest(
+                            ADD_USER_URL, newUserObj, new Response.Listener<JSONObject>() {
 
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            openUserPage(gson.fromJson(response.toString(), User.class));
-                        }
-                    }, new Response.ErrorListener() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    openUserPage(gson.fromJson(response.toString(), User.class));
+                                }
+                            }, new Response.ErrorListener() {
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            String message = "Failed to add new user";
-                            System.out.println(message + " error, " + error.getMessage());
-                            Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
-                            showSignInButton();
-                            removeProgressBar();
-                            mGoogleSignInClient.signOut();
-                        }
-                    });
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    String message = "Failed to add new user";
+                                    System.out.println(message + " error, " + error.getMessage());
+                                    Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+                                    showSignInButton();
+                                    removeProgressBar();
+                                    mGoogleSignInClient.signOut();
+                                }
+                            });
 
 
-            RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
-        } catch (JSONException | JsonProcessingException e) {
-            e.printStackTrace();
-        }
+                    RequestQueueSingleton.getInstance(getBaseContext()).getRequestQueue().add(request);
+                } catch (JSONException | JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
-
+/*
     @Override
     public void onBackPressed() {
 
-    }
+    }*/
 }

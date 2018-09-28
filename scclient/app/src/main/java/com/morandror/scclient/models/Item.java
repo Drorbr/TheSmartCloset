@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Item extends BaseModel {
     private String foundAt;
-    private byte[] image;
+    private String image;
     private Date recentlyUsed;
     private int usage;
     private String brand;
@@ -12,7 +12,7 @@ public class Item extends BaseModel {
     private int size;
     private String type;
 
-    public Item(String foundAt, byte[] image, Date recentlyUsed, int usage, String brand, String color, int size, String type) {
+    public Item(String foundAt, String image, Date recentlyUsed, int usage, String brand, String color, int size, String type) {
         this.foundAt = foundAt;
         this.image = image;
         this.recentlyUsed = recentlyUsed;
@@ -34,11 +34,11 @@ public class Item extends BaseModel {
         this.foundAt = foundAt;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

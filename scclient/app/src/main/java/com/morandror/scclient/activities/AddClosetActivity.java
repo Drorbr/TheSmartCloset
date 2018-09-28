@@ -32,10 +32,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
-import static com.morandror.scclient.utils.SharedStrings.ADD_CLOSET_URL;
+import static com.morandror.scclient.utils.SharedStrings.ADD_CLOSET_AND_ASSIGN_URL;
 import static com.morandror.scclient.utils.SharedStrings.ASSIGN_CLOSET_TO_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_URL;
-import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class AddClosetActivity extends AppCompatActivity {
@@ -54,37 +53,47 @@ public class AddClosetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_closet_activity);
-        progressBar = findViewById(R.id.progressBar_cyclic2);
-        errorText = findViewById(R.id.add_closet_error_text);
-        parent = (ViewGroup) errorText.getParent();
-        index = parent.indexOfChild(errorText);
-        user = (User)getIntent().getSerializableExtra(getString(R.string.user));
-        newClosetRdBtn = findViewById(R.id.rdBtnNew);
-        existingClosetRdBtn = findViewById(R.id.rdBtnExisting);
-        etAndStringDict = initEtAndStringDict();
-        closetIdEt = findViewById(R.id.closet_id_et);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar = findViewById(R.id.progressBar_cyclic2);
+                errorText = findViewById(R.id.add_closet_error_text);
+                parent = (ViewGroup) errorText.getParent();
+                index = parent.indexOfChild(errorText);
+                user = (User)getIntent().getSerializableExtra(getString(R.string.user));
+                newClosetRdBtn = findViewById(R.id.rdBtnNew);
+                existingClosetRdBtn = findViewById(R.id.rdBtnExisting);
+                etAndStringDict = initEtAndStringDict();
+                closetIdEt = findViewById(R.id.closet_id_et);
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        newClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-                    manageNewClosetTextLines(true);
-                    closetIdEt.setEnabled(false);
-                }
-            }
-        });
+            public void run() {
+                newClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b){
+                            manageNewClosetTextLines(true);
+                            closetIdEt.setEnabled(false);
+                        }
+                    }
+                });
 
-        existingClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    manageNewClosetTextLines(false);
-                    closetIdEt.setEnabled(true);
-                }
+                existingClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(b){
+                            manageNewClosetTextLines(false);
+                            closetIdEt.setEnabled(true);
+                        }
+                    }
+                });
             }
         });
     }
@@ -134,7 +143,11 @@ public class AddClosetActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        assignClosetToUser(gson.fromJson(response.toString(), Closet.class));
+                        Closet newCloset = gson.fromJson(response.toString(), Closet.class);
+                        if (user.getClosets() == null)
+                            user.setClosets(new HashSet<Closet>());
+                        user.getClosets().add(newCloset);
+                        assignClosetToUser(newCloset);
                     }
                 }, new Response.ErrorListener() {
 
@@ -184,15 +197,18 @@ public class AddClosetActivity extends AppCompatActivity {
         Closet closet = getClosetFromDict(etAndStringDict);
 
         try {
-            JSONObject newUserObj = new JSONObject(closet.toJson());
+            JSONObject newClosetObj = new JSONObject(closet.toJson());
             JsonObjectRequest request = new JsonObjectRequest(
-                ADD_CLOSET_URL, newUserObj, new Response.Listener<JSONObject>() {
+                    String.format(ADD_CLOSET_AND_ASSIGN_URL, user.getId()), newClosetObj, new Response.Listener<JSONObject>() {
 
                 @Override
                 public void onResponse(JSONObject response) {
                     System.out.println(getString(R.string.add_closet_success));
                     Closet newCloset = gson.fromJson(response.toString(), Closet.class);
-                    assignClosetToUser(newCloset);
+                    if (user.getClosets() == null)
+                        user.setClosets(new HashSet<Closet>());
+                    user.getClosets().add(newCloset);
+                    returnToUserPage();
                 }
             }, new Response.ErrorListener() {
 
@@ -213,19 +229,20 @@ public class AddClosetActivity extends AppCompatActivity {
         }
     }
 
+    private void returnToUserPage() {
+        Intent startNewActivity = new Intent(getBaseContext(), home_page_activity2.class);
+        startNewActivity.putExtra(getString(R.string.user), user);
+        startActivity(startNewActivity);
+    }
+
 
     private void assignClosetToUser(Closet newCloset) {
-        if (user.getClosets() == null)
-            user.setClosets(new HashSet<Closet>());
-        user.getClosets().add(newCloset);
         StringRequest request = new StringRequest(String.format(ASSIGN_CLOSET_TO_USER_URL, user.getId(), newCloset.getId()),
                 new Response.Listener<String>(){
                     @Override
                     public void onResponse(String response){
                         System.out.println("Assign closet to user succeeded");
-                        Intent startNewActivity = new Intent(getBaseContext(), home_page_activity2.class);
-                        startNewActivity.putExtra(getString(R.string.user), user);
-                        startActivity(startNewActivity);
+                        returnToUserPage();
                     }
                 }, new Response.ErrorListener() {
                     @Override

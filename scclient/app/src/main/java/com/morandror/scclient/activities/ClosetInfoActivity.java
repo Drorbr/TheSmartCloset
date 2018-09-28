@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClosetInfoActivity extends AppCompatActivity {
     TextView name;
@@ -48,15 +49,23 @@ public class ClosetInfoActivity extends AppCompatActivity {
 
         expListView = (ExpandableListView) findViewById(R.id.expandableListView);
 
-        closetItems = getClosetItems();
+//        closetItems = getClosetItemsDEBUG();
+        closetItems = closet.getItems().stream().collect(Collectors.<Item>toList());
 
-        prepareListData();
+        if (closetItems == null || closetItems.isEmpty())
+            showNoItems();
+        else {
+            prepareListData();
+            listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+            expListView.setAdapter(listAdapter);
+            initOnClicks();
+        }
+    }
 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
-
-        expListView.setAdapter(listAdapter);
-
-        initOnClicks();
+    private void showNoItems() {
+        View emptyView = findViewById(R.id.no_item_text);
+        expListView.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
     }
 
     private void initOnClicks() {
@@ -73,7 +82,7 @@ public class ClosetInfoActivity extends AppCompatActivity {
         });
     }
 
-    private List<Item> getClosetItems() {
+    private List<Item> getClosetItemsDEBUG() {
         ArrayList<Item> res = new ArrayList<>();
 
         res.add(new Item("closet", null, new Date(), 5, "Zara", "blue", 32, "T-shirt"));

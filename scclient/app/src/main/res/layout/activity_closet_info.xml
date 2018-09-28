@@ -40,4 +40,13 @@
         android:paddingTop="15dp"
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" />
 
+    <TextView
+        android:id="@+id/no_item_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_items_available"
+        android:textSize="30sp"
+        android:visibility="gone" />
+
 </LinearLayout>

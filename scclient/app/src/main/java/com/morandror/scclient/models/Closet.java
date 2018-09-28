@@ -6,12 +6,13 @@ import java.util.Set;
 public class Closet extends BaseModel{
     private int id;
     private String name;
-    private byte[] image;
+    private String image;
     private String rfidScanner;
     private String description;
     private String location;
     private Date insertDate;
     private Set<User> users;
+    private Set<Item> items;
 
     public Closet(int id, String name, String description, String location, Date insertDate) {
         this.id = id;
@@ -40,11 +41,11 @@ public class Closet extends BaseModel{
         this.name = name;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -86,5 +87,13 @@ public class Closet extends BaseModel{
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public Set<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<Item> items) {
+        this.items = items;
     }
 }

@@ -52,8 +52,6 @@ public class ItemInfoPopUp extends Activity {
         TextView brand = findViewById(R.id.item_brand_key);
         brand.setText(R.string.item_brand_key);
 
-        item.setUsage(32);
-
         TextView usageVal = findViewById(R.id.item_usage_value);
         usageVal.setText(String.valueOf(item.getUsage()));
 

@@ -44,7 +44,7 @@ import static com.morandror.scclient.utils.SharedStrings.GET_USER_STATS;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
-public class home_page_activity2 extends AppCompatActivity implements deleteClosetListener/*, DeleteItemListener */{
+public class home_page_activity2 extends AppCompatActivity implements deleteClosetListener{
     private User user;
     private static ClosetAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -67,63 +67,61 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
         recyclerView = findViewById(R.id.my_recycler_view);
 
         handleClosets();
+        setBottomNavigationMenu();
+    }
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.add_closet:
-                                Intent startNewActivity = new Intent(getBaseContext(), AddClosetActivity.class);
-                                startNewActivity.putExtra(getString(R.string.user), user);
-                                startActivity(startNewActivity);
-                                return true;
-                            case R.id.user_stats:
-//                                startStatsActivity();
-                                Item item1 = new Item("Home", null, new Date(), 42, "Zara", "Blue", 2, "Pants");
-                                Item item2 = new Item("Home", null, new Date(), 23, "Pull n' Bear", "Green", 3, "Shirt");
-                                ArrayList<Item> list = new ArrayList<>();
-                                list.add(item1);
-                                list.add(item2);
-                                Statistics debugStats = new Statistics(item1,  "Blue", list, list);
+    private void setBottomNavigationMenu() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bottomNavigationView = findViewById(R.id.bottom_navigation);
+                bottomNavigationView.setOnNavigationItemSelectedListener(
+                        new BottomNavigationView.OnNavigationItemSelectedListener() {
+                            @Override
+                            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                                switch (item.getItemId()) {
+                                    case R.id.add_closet:
+                                        Intent startNewActivity = new Intent(getBaseContext(), AddClosetActivity.class);
+                                        startNewActivity.putExtra(getString(R.string.user), user);
+                                        startActivity(startNewActivity);
+                                        return true;
+                                    case R.id.user_stats:
+                                        startStatsActivity();
+                                        return true;
+                                    case R.id.log_out:
+                                        mGoogleSignInClient.signOut()
+                                                .addOnCompleteListener( new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        Intent goBackHome = new Intent(getApplicationContext(), MainActivity.class);
+                                                        goBackHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        startActivity(goBackHome);
 
-                                Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
-                                statsIntent.putExtra(getString(R.string.stats),debugStats);
-                                startActivity(statsIntent);
-                                return true;
-                            case R.id.log_out:
-                                mGoogleSignInClient.signOut()
-                                        .addOnCompleteListener( new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                Intent goBackHome = new Intent(getApplicationContext(), MainActivity.class);
-                                                startActivity(goBackHome);
-
-                                            }
-                                        });
-                                return true;
-                        }
-                        return false;
-                    }
-                });
+                                                    }
+                                                });
+                                        return true;
+                                }
+                                return false;
+                            }
+                        });
+            }
+        });
     }
 
     private void startStatsActivity() {
 
         //debug
-        Item item1 = new Item("Home", null, new Date(), 42, "Zara", "Blue", 2, "Pants");
-        Item item2 = new Item("Home", null, new Date(), 23, "Pull n' Bear", "Green", 3, "Shirt");
-        ArrayList<Item> list = new ArrayList<>();
-        list.add(item1);
-        list.add(item2);
-        Statistics debugStats = new Statistics(item1,  "Blue", list, list);
-
-        Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
-        statsIntent.putExtra(getString(R.string.stats),debugStats);
-        startActivity(statsIntent);
+//        Item item1 = new Item("Home", null, new Date(), 42, "Zara", "Blue", 2, "Pants");
+//        Item item2 = new Item("Home", null, new Date(), 23, "Pull n' Bear", "Green", 3, "Shirt");
+//        ArrayList<Item> list = new ArrayList<>();
+//        list.add(item1);
+//        list.add(item2);
+//        Statistics debugStats = new Statistics(item1,  "Blue", list, list);
+//
+//        Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
+//        statsIntent.putExtra(getString(R.string.stats),debugStats);
+//        startActivity(statsIntent);
         //debug
-        /*
         JsonObjectRequest request = new JsonObjectRequest
                 (String.format(GET_USER_STATS, user.getId()), null, new Response.Listener<JSONObject>() {
 
@@ -143,15 +141,20 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
                 });
 
         request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);*/
+        RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
     }
 
     private void handleClosets() {
-        if (user.getClosets() == null || user.getClosets().isEmpty()){
-            showNoClosets();
-        } else {
-            showUsersClosets();
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (user.getClosets() == null || user.getClosets().isEmpty()){
+                    showNoClosets();
+                } else {
+                    showUsersClosets();
+                }
+            }
+        });
     }
 
     private void showUsersClosets() {
@@ -182,11 +185,6 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
         user.getClosets().remove(closet);
         handleClosets();
     }
-/*
-    @Override
-    public void onItemDelete(Item item) {
-
-    }*/
 
     public static class MyOnClickListener implements View.OnClickListener {
 

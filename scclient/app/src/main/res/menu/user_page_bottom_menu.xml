@@ -10,7 +10,7 @@
     <item
         android:id="@+id/user_stats"
         android:title="Statistics"
-        android:icon="@drawable/stats"
+        android:icon="@drawable/stats2"
         android:enabled="true"/>
 
     <item
