@@ -37,8 +37,8 @@ public class scManager {
         return dbHandler.addUser(newUser);
     }
 
-    public User getUser(String token) {
-        return dbHandler.getUser(token);
+    public User getUser(String emailObj) {
+        return dbHandler.getUser(emailObj);
     }
 
     public Optional<Closet> getCloset(int closetID) {
@@ -72,5 +72,14 @@ public class scManager {
 
     public ResponseEntity<?> deleteCloset(int closetID) {
         return dbHandler.deleteCloset(closetID);
+    }
+
+    public Statistics getUserStatistics(int userID) {
+        String color = dbHandler.getUserFavoriteColor(userID);
+        Item favoriteItem = dbHandler.getUserFavoriteItem(userID);
+        List<Item> lastDays = dbHandler.getUserLast7DaysItems(userID);
+        List<Item> newestItems = dbHandler.getUserNewestItems(userID);
+
+        return new Statistics(favoriteItem, color, lastDays, newestItems);
     }
 }

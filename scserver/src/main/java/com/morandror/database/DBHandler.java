@@ -39,9 +39,13 @@ public class DBHandler {
         logger.info("Database connected!");
     }
 
-    public User getUser(String token) {
-        logger.info("Database  - Get user by token ID");
-        return userRepository.findByTokenID(token);
+    public User getUser(String email) {
+        User user = userRepository.findByEmail(email);
+        if(user != null)
+            logger.info("Database  - Got user id: " + user.getId() + " with email: " + email);
+        else
+            logger.info("Database - User with email: " + email + "does not exist");
+        return user;
     }
 
     public List<User> getAllUsers() {
@@ -95,11 +99,14 @@ public class DBHandler {
 
     public List<Item> getLast7DaysItems(int closetID) {
         List<Item> list =  itemRepository.getLastUsed(closetID);
+        logger.info("Database - found " + list.size() + " item(s) in closet id: " + closetID + " that used in the last 7 days");
         return list;
     }
 
     public List<Item> getNewestItems(int closetID) {
-        return itemRepository.getRecentlyAdded(closetID);
+        List<Item> list = itemRepository.getRecentlyAdded(closetID);
+        logger.info("Database - found " + list.size() + " item(s) in closet id: " + closetID + " that added to the closet in the last 7 days");
+        return list;
     }
 
     public ResponseEntity<?> deleteItem(int itemID) {
@@ -118,5 +125,29 @@ public class DBHandler {
             logger.info("Database - deleted closet id " + closetID + " from 'closet'");
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("Closet ID " + closetID + " not found"));
+    }
+
+    public String getUserFavoriteColor(int userID) {
+        String color = itemRepository.findUserMostFavoriteColor(userID);
+        logger.info("Database  - The favorite color of user id: " + userID + " is " + color);
+        return color;
+    }
+
+    public Item getUserFavoriteItem(int userID) {
+        Item item = itemRepository.findUserMostFavoriteItem(userID);
+        logger.info("Database  - The favorite item of user id: " + userID + " is item.id = " + item.getId());
+        return item;
+    }
+
+    public List<Item> getUserLast7DaysItems(int userID) {
+        List<Item> list =  itemRepository.getUserLastUsed(userID);
+        logger.info("Database - found " + list.size() + " item(s) of user id: " + userID + " that used in the last 7 days");
+        return list;
+    }
+
+    public List<Item> getUserNewestItems(int userID) {
+        List<Item> list = itemRepository.getUserRecentlyAdded(userID);
+        logger.info("Database - found " + list.size() + " item(s) of user id: " + userID + " that added to the closet in the last 7 days");
+        return list;
     }
 }

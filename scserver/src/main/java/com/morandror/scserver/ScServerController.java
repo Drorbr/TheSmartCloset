@@ -1,7 +1,7 @@
 package com.morandror.scserver;
 
+import com.morandror.models.EmailObj;
 import com.morandror.models.Statistics;
-import com.morandror.models.TokenID;
 import com.morandror.models.dbmodels.Closet;
 import com.morandror.models.dbmodels.Item;
 import com.morandror.models.dbmodels.User;
@@ -49,9 +49,9 @@ public class ScServerController {
     }
 
     @RequestMapping(value = "/user/get", method = RequestMethod.POST)
-    public User getUser(@RequestBody TokenID token) {
-        logger.info("Get user post request");
-        return manager.getUser(token.getToken());
+    public User getUser(@RequestBody EmailObj emailObj) {
+        logger.info("Get user by email - post request. Search for user with id: " + emailObj.getEmail());
+        return manager.getUser(emailObj.getEmail());
     }
 
     @RequestMapping(value = "/closet/get/{id}", method = RequestMethod.GET)
@@ -100,5 +100,11 @@ public class ScServerController {
     public ResponseEntity<?> deleteCloset(@PathVariable("closetID") int closetID) {
         logger.info("delete closet post request - delete closet id " + closetID);
         return manager.deleteCloset(closetID);
+    }
+
+    @RequestMapping(value = "/user/statistics/{id}", method = RequestMethod.GET)
+    public Statistics getStatisticsOfUser(@PathVariable("id") int userID) {
+        logger.info("Get user statistics - get request");
+        return manager.getUserStatistics(userID);
     }
 }
