@@ -41,48 +41,60 @@ public class DBHandler {
 
     public User getUser(String email) {
         User user = userRepository.findByEmail(email);
-        if(user != null)
+        if(user != null) {
             logger.info("Database  - Got user id: " + user.getId() + " with email: " + email);
-        else
-            logger.info("Database - User with email: " + email + "does not exist");
+        } else {
+            logger.info("Database - User with email: " + email + " does not exist");
+        }
         return user;
     }
 
     public List<User> getAllUsers() {
-        logger.info("Database  - Get all users");
+        logger.info("Database - Get all users");
         return userRepository.findAll();
     }
 
     public User addUser(User newUser) {
-        logger.info("Database  - Add new user");
-        return userRepository.saveAndFlush(newUser);
+        logger.info("Database - Add new user");
+        User user = userRepository.saveAndFlush(newUser);
+        logger.info("Database - User with id: " + user.getId() + " added to the database");
+        return user;
     }
 
     public Optional<Closet> getCloset(int closetID) {
-        logger.info("Database  - Get closet by ID");
-        return closetRepository.findById(closetID);
+        logger.info("Database - Get closet by ID");
+        Optional<Closet> closet =  closetRepository.findById(closetID);
+        if(closet.isPresent()){
+            logger.info("Found closet with id: " + closet.get().getId());
+        }
+        else{
+            logger.info("Closet with id: " + closetID + "does not dound in the data base");
+        }
+
+        return closet;
     }
 
     public Closet addCloset(Closet newCloset) {
-        logger.info("Database  - Add closet");
-        return closetRepository.saveAndFlush(newCloset);
+        logger.info("Database - Add closet");
+        Closet closet =  closetRepository.saveAndFlush(newCloset);
+        logger.info("Database - Closet id : " + closet.getId() + " added to the database successfully");
+        return closet;
     }
 
     public void assignClosetToUser(UserHasCloset userHasCloset) {
-        logger.info("Database  - Assign user to closet - user_has_closet table");
+        logger.info("Database  - Assign closet id:" + userHasCloset.getCloset_id() +  " to user id " +
+                userHasCloset.getUser_id() + " - user_has_closet table");
         userHasClosetRepository.saveAndFlush(userHasCloset);
     }
 
     public void addItem(Item newItem, int closetID) {
-        logger.info("Database  - Add new item");
+        logger.info("Database - Add new item");
         Optional<Closet> closet = getCloset(closetID);
         if(closet.isPresent()){
             newItem.setCloset(closet.get());
             closet.get().getItems().add(newItem);
             closetRepository.saveAndFlush(closet.get());
         }
-
-        //return itemRepository.saveAndFlush(newItem);
     }
 
     public String getFavoriteColor(int closetID) {

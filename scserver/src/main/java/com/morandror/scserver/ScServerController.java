@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/scServer")
@@ -40,7 +41,7 @@ public class ScServerController {
 
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
     public User addUser(@RequestBody User newUser) {
-        logger.info("Add user post request");
+        logger.info("Add user post request - Add user with email: " + newUser.getEmail());
         if (newUser.getId() == 0) {
             return manager.addUser(newUser);
         }
@@ -56,15 +57,20 @@ public class ScServerController {
 
     @RequestMapping(value = "/closet/get/{id}", method = RequestMethod.GET)
     public Closet getCloset(@PathVariable("id") int closetID) {
-        logger.info("Get closet GET request");
-        return manager.getCloset(closetID).get();
+        logger.info("Get closet GET request - got closet id: " + closetID);
+        Optional<Closet> closet = manager.getCloset(closetID);
+        return closet.orElse(null);
     }
 
-    @RequestMapping(value = "/closet/add", method = RequestMethod.POST)
-    public Closet addCloset(@RequestBody Closet newCloset) {
-        logger.info("Add closet post request");
+    @RequestMapping(value = "/closet/add/{userID}", method = RequestMethod.POST)
+    public Closet addCloset(@RequestBody Closet newCloset, @PathVariable("userID") int userID) {
+        logger.info("Add closet post request. Add the closet to user id: " + userID);
         if (newCloset.getId() == 0) {
-            return manager.addCloset(newCloset);
+            Closet closet =  manager.addCloset(newCloset);
+            logger.info("Assign Closet id: " + closet.getId() + " to user id: " + userID);
+            UserHasCloset userHasCloset = new UserHasCloset(userID, closet.getId());
+            manager.assignClosetToUser(userHasCloset);
+            return closet;
         }
 
         return null;
@@ -72,12 +78,13 @@ public class ScServerController {
 
     @RequestMapping(value = "/closet/statistics/{id}", method = RequestMethod.GET)
     public Statistics getStatistics(@PathVariable("id") int closetID) {
-        logger.info("Get closet statistics - get request");
+        logger.info("Get closet statistics - calculate statistics for closet id: " + closetID);
         return manager.getClosetStatistics(closetID);
     }
 
     @RequestMapping(value = "/user/AssignCloset/{userId}/{closetId}", method = RequestMethod.GET)
     public void assignClosetToUser(@PathVariable("userId") int userId, @PathVariable("closetId") int closetID) {
+        logger.info("Assign Closet id: " + closetID + " to user id: " + userId);
         UserHasCloset userHasCloset = new UserHasCloset(userId, closetID);
         manager.assignClosetToUser(userHasCloset);
     }
@@ -104,7 +111,7 @@ public class ScServerController {
 
     @RequestMapping(value = "/user/statistics/{id}", method = RequestMethod.GET)
     public Statistics getStatisticsOfUser(@PathVariable("id") int userID) {
-        logger.info("Get user statistics - get request");
+        logger.info("Get user statistics - calculate statistics for user id: " + userID);
         return manager.getUserStatistics(userID);
     }
 }

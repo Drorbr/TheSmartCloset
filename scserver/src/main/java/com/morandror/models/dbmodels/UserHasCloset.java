@@ -2,12 +2,12 @@ package com.morandror.models.dbmodels;
 
 
 import com.morandror.models.BaseModel;
-import com.morandror.models.UseClosetID;
+import com.morandror.models.UserClosetID;
 
 import javax.persistence.*;
 
 @Entity
-@IdClass(UseClosetID.class)
+@IdClass(UserClosetID.class)
 @Table(name = "user_has_closet")
 public class UserHasCloset extends BaseModel{
 

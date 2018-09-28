@@ -2,15 +2,15 @@ package com.morandror.models;
 
 import java.io.Serializable;
 
-public class UseClosetID implements Serializable {
+public class UserClosetID implements Serializable {
 
     private int closet_id;
     private int user_id;
 
-    public UseClosetID() {
+    public UserClosetID() {
     }
 
-    public UseClosetID(int closet_id, int user_id) {
+    public UserClosetID(int closet_id, int user_id) {
         this.closet_id = closet_id;
         this.user_id = user_id;
     }
