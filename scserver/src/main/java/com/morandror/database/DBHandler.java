@@ -41,11 +41,12 @@ public class DBHandler {
 
     public User getUser(String email) {
         User user = userRepository.findByEmail(email);
-        if(user != null) {
+        if (user != null) {
             logger.info("Database  - Got user id: " + user.getId() + " with email: " + email);
         } else {
             logger.info("Database - User with email: " + email + " does not exist");
         }
+
         return user;
     }
 
@@ -58,16 +59,16 @@ public class DBHandler {
         logger.info("Database - Add new user");
         User user = userRepository.saveAndFlush(newUser);
         logger.info("Database - User with id: " + user.getId() + " added to the database");
+
         return user;
     }
 
     public Optional<Closet> getCloset(int closetID) {
         logger.info("Database - Get closet by ID");
-        Optional<Closet> closet =  closetRepository.findById(closetID);
-        if(closet.isPresent()){
+        Optional<Closet> closet = closetRepository.findById(closetID);
+        if (closet.isPresent()) {
             logger.info("Found closet with id: " + closet.get().getId());
-        }
-        else{
+        } else {
             logger.info("Closet with id: " + closetID + "does not found in the database");
         }
 
@@ -76,13 +77,13 @@ public class DBHandler {
 
     public Closet addCloset(Closet newCloset) {
         logger.info("Database - Add closet");
-        Closet closet =  closetRepository.saveAndFlush(newCloset);
+        Closet closet = closetRepository.saveAndFlush(newCloset);
         logger.info("Database - Closet id : " + closet.getId() + " added to the database successfully");
         return closet;
     }
 
     public void assignClosetToUser(UserHasCloset userHasCloset) {
-        logger.info("Database  - Assign closet id:" + userHasCloset.getCloset_id() +  " to user id " +
+        logger.info("Database  - Assign closet id:" + userHasCloset.getCloset_id() + " to user id " +
                 userHasCloset.getUser_id() + " - user_has_closet table");
         userHasClosetRepository.saveAndFlush(userHasCloset);
     }
@@ -90,7 +91,7 @@ public class DBHandler {
     public void addItem(Item newItem, int closetID) {
         logger.info("Database - Add new item");
         Optional<Closet> closet = getCloset(closetID);
-        if(closet.isPresent()){
+        if (closet.isPresent()) {
             newItem.setCloset(closet.get());
             closet.get().getItems().add(newItem);
             closetRepository.saveAndFlush(closet.get());
@@ -105,19 +106,34 @@ public class DBHandler {
 
     public Item getFavoriteItem(int closetID) {
         Item item = itemRepository.findMostFavoriteItem(closetID);
-        logger.info("Database  - The favorite item in closet id " + closetID + " is item.id = " + item.getId());
+        if (item != null) {
+            logger.info("Database  - The favorite item in closet id " + closetID + " is item.id = " + item.getId());
+        } else {
+            logger.info("Database - Failed to get favorite item. No items in closet id: " + closetID);
+        }
+
         return item;
     }
 
     public List<Item> getLast7DaysItems(int closetID) {
-        List<Item> list =  itemRepository.getLastUsed(closetID);
-        logger.info("Database - found " + list.size() + " item(s) in closet id: " + closetID + " that used in the last 7 days");
+        List<Item> list = itemRepository.getLastUsed(closetID);
+        if (list != null && list.size() > 0) {
+            logger.info("Database - found " + list.size() + " item(s) in closet id: " + closetID + " that used in the last 7 days");
+        } else {
+            logger.info("Database - Failed to get last 7 days items. No items in closet id: " + closetID);
+        }
+
         return list;
     }
 
     public List<Item> getNewestItems(int closetID) {
         List<Item> list = itemRepository.getRecentlyAdded(closetID);
-        logger.info("Database - found " + list.size() + " item(s) in closet id: " + closetID + " that added to the closet in the last 7 days");
+        if (list != null && list.size() > 0) {
+            logger.info("Database - found " + list.size() + " item(s) in closet id: " + closetID + " that added to the closet in the last 7 days");
+        } else {
+            logger.info("Database - Failed to get newest items. No items in closet id: " + closetID);
+        }
+
         return list;
     }
 
@@ -141,35 +157,49 @@ public class DBHandler {
 
     public String getUserFavoriteColor(int userID) {
         String color = itemRepository.findUserMostFavoriteColor(userID);
-        logger.info("Database  - The favorite color of user id: " + userID + " is " + color);
+        logger.info("Database - The favorite color of user id: " + userID + " is " + color);
         return color;
     }
 
     public Item getUserFavoriteItem(int userID) {
         Item item = itemRepository.findUserMostFavoriteItem(userID);
-        logger.info("Database  - The favorite item of user id: " + userID + " is item.id = " + item.getId());
+        if (item != null) {
+            logger.info("Database - The favorite item of user id: " + userID + " is item.id = " + item.getId());
+        } else {
+            logger.info("Database - Failed to get favorite item. No items in for user id: " + userID);
+        }
+
         return item;
     }
 
     public List<Item> getUserLast7DaysItems(int userID) {
-        List<Item> list =  itemRepository.getUserLastUsed(userID);
-        logger.info("Database - found " + list.size() + " item(s) of user id: " + userID + " that used in the last 7 days");
+        List<Item> list = itemRepository.getUserLastUsed(userID);
+        if (list != null && list.size() > 0) {
+            logger.info("Database - found " + list.size() + " item(s) of user id: " + userID + " that used in the last 7 days");
+        } else {
+            logger.info("Database - Failed to get last used items. No items for user id: " + userID);
+        }
+
         return list;
     }
 
     public List<Item> getUserNewestItems(int userID) {
         List<Item> list = itemRepository.getUserRecentlyAdded(userID);
-        logger.info("Database - found " + list.size() + " item(s) of user id: " + userID + " that added to the closet in the last 7 days");
+        if (list != null && list.size() > 0) {
+            logger.info("Database - found " + list.size() + " item(s) of user id: " + userID + " that added to the closet in the last 7 days");
+        } else {
+            logger.info("Database - Failed to get newest items. No items for user id: " + userID);
+        }
+
         return list;
     }
 
     public Optional<User> getUserByID(int userID) {
         logger.info("Database - Get user by ID");
-        Optional<User> user =  userRepository.findById(userID);
-        if(user.isPresent()){
+        Optional<User> user = userRepository.findById(userID);
+        if (user.isPresent()) {
             logger.info("Found user with id: " + user.get().getId());
-        }
-        else{
+        } else {
             logger.info("User with id: " + userID + "does not found in the database");
         }
 
