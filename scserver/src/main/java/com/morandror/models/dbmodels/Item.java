@@ -44,7 +44,7 @@ public class Item extends BaseModel {
 
     @NotNull
     @Column(name = "size")
-    private int size;
+    private String size;
 
     @NotNull
     @Column(name = "type")
@@ -113,11 +113,11 @@ public class Item extends BaseModel {
         this.color = color;
     }
 
-    public int getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(String size) {
         this.size = size;
     }
 
