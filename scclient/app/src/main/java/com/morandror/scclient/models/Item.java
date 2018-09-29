@@ -6,17 +6,18 @@ public class Item extends BaseModel {
     private int id;
     private String foundAt;
     private String image;
-    private Date recentlyUsed;
+    private Date recently_used;
+    private Date insert_date;
     private int usage;
     private String brand;
     private String color;
-    private int size;
+    private String size;
     private String type;
 
-    public Item(String foundAt, String image, Date recentlyUsed, int usage, String brand, String color, int size, String type) {
+    public Item(String foundAt, String image, Date recently_used, int usage, String brand, String color, String size, String type) {
         this.foundAt = foundAt;
         this.image = image;
-        this.recentlyUsed = recentlyUsed;
+        this.recently_used = recently_used;
         this.usage = usage;
         this.brand = brand;
         this.color = color;
@@ -51,12 +52,12 @@ public class Item extends BaseModel {
         this.image = image;
     }
 
-    public Date getRecentlyUsed() {
-        return recentlyUsed;
+    public Date getRecently_used() {
+        return recently_used;
     }
 
-    public void setRecentlyUsed(Date recentlyUsed) {
-        this.recentlyUsed = recentlyUsed;
+    public void setRecently_used(Date recently_used) {
+        this.recently_used = recently_used;
     }
 
     public int getUsage() {
@@ -83,11 +84,11 @@ public class Item extends BaseModel {
         this.color = color;
     }
 
-    public int getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(String size) {
         this.size = size;
     }
 
@@ -97,6 +98,14 @@ public class Item extends BaseModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Date getInsert_date() {
+        return insert_date;
+    }
+
+    public void setInsert_date(Date insert_date) {
+        this.insert_date = insert_date;
     }
 
     @Override

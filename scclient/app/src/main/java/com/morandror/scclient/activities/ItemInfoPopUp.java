@@ -3,7 +3,6 @@ package com.morandror.scclient.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
@@ -33,9 +32,9 @@ public class ItemInfoPopUp extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-            getWindow().setLayout((int)(width*.85), (int)(height*.75));
+        getWindow().setLayout((int) (width * .85), (int) (height * .75));
 
-        item = (Item)getIntent().getSerializableExtra(getString(R.string.item));
+        item = (Item) getIntent().getSerializableExtra(getString(R.string.item));
 
         setTexts();
 
@@ -57,7 +56,8 @@ public class ItemInfoPopUp extends Activity {
 
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:MM");
         TextView ruVal = findViewById(R.id.item_recentlyUsed_value);
-        ruVal.setText(String.valueOf(DATE_FORMAT.format(item.getRecentlyUsed())));//format date
+        if (item.getRecently_used() != null)
+            ruVal.setText(String.valueOf(DATE_FORMAT.format(item.getRecently_used())));//format date
 
         TextView brandVal = findViewById(R.id.item_brand_value);
         brandVal.setText(String.valueOf(item.getBrand()));

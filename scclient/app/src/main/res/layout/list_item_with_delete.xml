@@ -11,7 +11,7 @@
         android:paddingBottom="5dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="5dp"
-        android:textSize="17dip" />
+        android:textSize="17dip"/>
 
         <Space
         android:layout_width="0dp"

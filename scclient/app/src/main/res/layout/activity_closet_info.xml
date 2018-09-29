@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
 
     <TextView
         android:id="@+id/closet_info_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:paddingTop="@dimen/between_title_pad"
         android:textSize="@dimen/title" />
 
@@ -17,7 +19,8 @@
         android:id="@+id/closet_info_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_below="@+id/closet_info_name"
+        android:layout_centerHorizontal="true"
         android:paddingTop="@dimen/between_title_pad"
         android:textSize="@dimen/sub_title" />
 
@@ -25,28 +28,43 @@
         android:id="@+id/closet_info_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/between_title_pad"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="68dp"
         android:drawableStart="@drawable/location"
-        android:layout_gravity="center"
         android:gravity="center"
+        android:paddingTop="@dimen/between_title_pad"
         android:textSize="@dimen/sub_title" />
 
     <ExpandableListView
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="354dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp"
-        android:paddingTop="15dp"
-        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" />
+        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+        android:paddingTop="15dp" />
 
     <TextView
         android:id="@+id/no_item_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/closet_info_location"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
         android:gravity="center"
         android:text="@string/no_items_available"
         android:textSize="30sp"
         android:visibility="gone" />
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add" />
+</RelativeLayout>

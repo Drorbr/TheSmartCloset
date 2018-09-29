@@ -3,12 +3,14 @@ package com.morandror.scclient.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.morandror.scclient.R;
+import com.morandror.scclient.adapters.DeleteItemListener;
 import com.morandror.scclient.adapters.ExpandableListAdapter;
 import com.morandror.scclient.models.Closet;
 import com.morandror.scclient.models.Item;
@@ -19,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ClosetInfoActivity extends AppCompatActivity {
+public class ClosetInfoActivity extends AppCompatActivity implements DeleteItemListener {
     TextView name;
     TextView description;
     TextView location;
@@ -47,19 +49,43 @@ public class ClosetInfoActivity extends AppCompatActivity {
         description.setText(closet.getDescription());
         location.setText(closet.getLocation());
 
-        expListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        expListView = findViewById(R.id.expandableListView);
 
-//        closetItems = getClosetItemsDEBUG();
         closetItems = closet.getItems().stream().collect(Collectors.<Item>toList());
+        initFabClick();
+        handleClosetItems();
+    }
 
+    private void handleClosetItems() {
         if (closetItems == null || closetItems.isEmpty())
             showNoItems();
         else {
             prepareListData();
             listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, R.layout.list_item_with_delete);
+            listAdapter.setItemDeleteListener(this);
             expListView.setAdapter(listAdapter);
             initOnClicks();
         }
+    }
+
+    @Override
+    public void onItemDelete(Item item) {
+        closet.getItems().remove(item);
+        closetItems.remove(item);
+        handleClosetItems();
+    }
+
+    private void initFabClick() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addItem = new Intent(getBaseContext(), AddItemActivity.class);
+                addItem.putExtra(getString(R.string.closet_id), closet.getId());
+                addItem.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(addItem);
+            }
+        });
     }
 
     private void showNoItems() {
@@ -80,16 +106,6 @@ public class ClosetInfoActivity extends AppCompatActivity {
                 return false;
             }
         });
-    }
-
-    private List<Item> getClosetItemsDEBUG() {
-        ArrayList<Item> res = new ArrayList<>();
-
-        res.add(new Item("closet", null, new Date(), 5, "Zara", "blue", 32, "T-shirt"));
-        res.add(new Item("rotem", null, new Date(), 6, "Pull n' Bear", "red", 32, "dress"));
-        res.add(new Item("dror", null, new Date(), 7, "Bershka", "green", 32, "Pants"));
-
-        return res;
     }
 
     private void prepareListData() {

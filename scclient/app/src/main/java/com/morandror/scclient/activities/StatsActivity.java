@@ -74,8 +74,8 @@ public class StatsActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view,
                                         int groupPosition, int childPosition, long l) {
-                Item item = (Item) listAdapter.getChild(groupPosition,childPosition);
-                Intent newIntent = new Intent(getBaseContext()  , ItemInfoPopUp.class);
+                Item item = (Item) listAdapter.getChild(groupPosition, childPosition);
+                Intent newIntent = new Intent(getBaseContext(), ItemInfoPopUp.class);
                 newIntent.putExtra(getString(R.string.item), item);
                 startActivity(newIntent);
                 return false;
@@ -87,12 +87,14 @@ public class StatsActivity extends AppCompatActivity {
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
 
-        if (stats.getLastDays() != null && !stats.getLastDays().isEmpty())
+        if (stats.getLastDays() != null && !stats.getLastDays().isEmpty()) {
             listDataHeader.add(LAST_DAYS);
             listDataChild.put(LAST_DAYS, stats.getLastDays());
+        }
 
-        if (stats.getNewestItems() != null && !stats.getNewestItems().isEmpty())
+        if (stats.getNewestItems() != null && !stats.getNewestItems().isEmpty()) {
             listDataHeader.add(NEWEST);
             listDataChild.put(NEWEST, stats.getNewestItems());
+        }
     }
 }

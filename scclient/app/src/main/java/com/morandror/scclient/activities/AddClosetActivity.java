@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -19,24 +18,21 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.Gson;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Closet;
-import com.morandror.scclient.models.Statistics;
 import com.morandror.scclient.models.User;
+import com.morandror.scclient.utils.JsonHandler;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_CLOSET_AND_ASSIGN_URL;
 import static com.morandror.scclient.utils.SharedStrings.ASSIGN_CLOSET_TO_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_URL;
-import static com.morandror.scclient.utils.SharedStrings.GET_USER_BY_EMAIL_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_BY_ID_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
@@ -45,7 +41,6 @@ public class AddClosetActivity extends AppCompatActivity {
     ViewGroup parent;
     int index;
     private TextView errorText;
-    private Gson gson = new Gson();
     User user;
     RadioButton newClosetRdBtn;
     RadioButton existingClosetRdBtn;
@@ -64,7 +59,7 @@ public class AddClosetActivity extends AppCompatActivity {
                 errorText = findViewById(R.id.add_closet_error_text);
                 parent = (ViewGroup) errorText.getParent();
                 index = parent.indexOfChild(errorText);
-                user = (User)getIntent().getSerializableExtra(getString(R.string.user));
+                user = (User) getIntent().getSerializableExtra(getString(R.string.user));
                 newClosetRdBtn = findViewById(R.id.rdBtnNew);
                 existingClosetRdBtn = findViewById(R.id.rdBtnExisting);
                 etAndStringDict = initEtAndStringDict();
@@ -82,7 +77,7 @@ public class AddClosetActivity extends AppCompatActivity {
                 newClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (b){
+                        if (b) {
                             manageNewClosetTextLines(true);
                             closetIdEt.setEnabled(false);
                         }
@@ -92,7 +87,7 @@ public class AddClosetActivity extends AppCompatActivity {
                 existingClosetRdBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(b){
+                        if (b) {
                             manageNewClosetTextLines(false);
                             closetIdEt.setEnabled(true);
                         }
@@ -102,13 +97,13 @@ public class AddClosetActivity extends AppCompatActivity {
         });
     }
 
-    private void manageNewClosetTextLines(boolean enabled){
-        for (EditText et : etAndStringDict.keySet()){
+    private void manageNewClosetTextLines(boolean enabled) {
+        for (EditText et : etAndStringDict.keySet()) {
             et.setEnabled(enabled);
         }
     }
 
-    protected void submitInfo(View button){
+    protected void submitInfo(View button) {
         boolean foundError = false;
         String emptyErr = "Value can't be empty";
 
@@ -116,10 +111,10 @@ public class AddClosetActivity extends AppCompatActivity {
         errorText.setVisibility(View.INVISIBLE);
         if (existingClosetRdBtn.isChecked()) {
             String value = closetIdEt.getText().toString();
-            if (TextUtils.isEmpty(value)){
+            if (TextUtils.isEmpty(value)) {
                 foundError = true;
                 closetIdEt.setError(emptyErr);
-            } else{
+            } else {
                 getClosetAndAssign(value);
             }
         } else {
@@ -147,7 +142,7 @@ public class AddClosetActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        newCloset = gson.fromJson(response.toString(), Closet.class);
+                        newCloset = (Closet) JsonHandler.getInstance().fromString(response.toString(), Closet.class);
                         assignClosetToUser();
                     }
                 }, new Response.ErrorListener() {
@@ -178,7 +173,7 @@ public class AddClosetActivity extends AppCompatActivity {
         ProgressBar newPB = new ProgressBar(this);
         newPB.setVisibility(visibility);
         newPB.setPadding(0, (int) getResources().getDimension(R.dimen.progressbar_top_padding), 0, 0);
-        newPB = (ProgressBar)getLayoutInflater().inflate(R.layout.mypb, parent, false);
+        newPB = (ProgressBar) getLayoutInflater().inflate(R.layout.mypb, parent, false);
         parent.addView(newPB, index);
         progressBar = newPB;
     }
@@ -186,10 +181,10 @@ public class AddClosetActivity extends AppCompatActivity {
     private LinkedHashMap<EditText, String> initEtAndStringDict() {
         LinkedHashMap<EditText, String> etAndStringDict = new LinkedHashMap<>();
 
-        etAndStringDict.put((EditText)findViewById(R.id.closet_name_et), null);
-        etAndStringDict.put((EditText)findViewById(R.id.closet_location_et), null);
-        etAndStringDict.put((EditText)findViewById(R.id.closet_rfid_et), null);
-        etAndStringDict.put((EditText)findViewById(R.id.closet_description_et), null);
+        etAndStringDict.put((EditText) findViewById(R.id.closet_name_et), null);
+        etAndStringDict.put((EditText) findViewById(R.id.closet_location_et), null);
+        etAndStringDict.put((EditText) findViewById(R.id.closet_rfid_et), null);
+        etAndStringDict.put((EditText) findViewById(R.id.closet_description_et), null);
 
         return etAndStringDict;
     }
@@ -205,23 +200,23 @@ public class AddClosetActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             System.out.println(getString(R.string.add_closet_success));
-                            newCloset = gson.fromJson(response.toString(), Closet.class);
+                            newCloset = (Closet) JsonHandler.getInstance().fromString(response.toString(), Closet.class);
                             returnToUserPage();
                         }
                     }, new Response.ErrorListener() {
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            System.out.println("Failed to add new closet - " + error.toString());
-                            removeProgressBar();
-                            errorText.setVisibility(View.VISIBLE);
-                            errorText.setText(R.string.error_insert_closet);
-                        }
-                    });
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    System.out.println("Failed to add new closet - " + error.toString());
+                    removeProgressBar();
+                    errorText.setVisibility(View.VISIBLE);
+                    errorText.setText(R.string.error_insert_closet);
+                }
+            });
 
-
+            request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
-        } catch (JSONException | JsonProcessingException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -234,21 +229,21 @@ public class AddClosetActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         System.out.println("Got user from server");
                         Intent startNewActivity = new Intent(getBaseContext(), home_page_activity2.class);
-                        startNewActivity.putExtra(getString(R.string.user), gson.fromJson(response.toString(), User.class));
+                        startNewActivity.putExtra(getString(R.string.user), (User) JsonHandler.getInstance().fromString(response.toString(), User.class));
                         startActivity(startNewActivity);
                     }
                 }, new Response.ErrorListener() {
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println("Failed to get user from server");
-                        removeProgressBar();
-                        errorText.setVisibility(View.VISIBLE);
-                        errorText.setText(R.string.error_get_user);
-                    }
-                });
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("Failed to get user from server");
+                removeProgressBar();
+                errorText.setVisibility(View.VISIBLE);
+                errorText.setText(R.string.error_get_user);
+            }
+        });
 
-
+        request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
 
     }
@@ -256,19 +251,20 @@ public class AddClosetActivity extends AppCompatActivity {
 
     private void assignClosetToUser() {
         StringRequest request = new StringRequest(String.format(ASSIGN_CLOSET_TO_USER_URL, user.getId(), newCloset.getId()),
-                new Response.Listener<String>(){
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String response){
+                    public void onResponse(String response) {
                         System.out.println("Assign closet to user succeeded");
                         returnToUserPage();
                     }
                 }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println("Failed to assign closet to user");
-                    }
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("Failed to assign closet to user");
+            }
         });
 
+        request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
     }
 

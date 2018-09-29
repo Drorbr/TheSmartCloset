@@ -95,6 +95,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:textSize="16sp"
+        android:text="@string/item_recentlyUsed_default"
         app:layout_constraintBottom_toTopOf="@+id/item_location"
         app:layout_constraintStart_toStartOf="@+id/guideline3" />
 

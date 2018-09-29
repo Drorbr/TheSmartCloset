@@ -18,14 +18,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
 import com.morandror.scclient.R;
 import com.morandror.scclient.activities.ClosetInfoActivity;
 import com.morandror.scclient.activities.StatsActivity;
-import com.morandror.scclient.activities.home_page_activity2;
 import com.morandror.scclient.models.Closet;
 import com.morandror.scclient.models.Statistics;
-import com.morandror.scclient.models.User;
+import com.morandror.scclient.utils.JsonHandler;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
 import org.json.JSONObject;
@@ -33,12 +31,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import static com.morandror.scclient.utils.SharedStrings.DELETE_CLOSET_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_STATS_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_URL;
-import static com.morandror.scclient.utils.SharedStrings.GET_USER_BY_ID_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHolder> {
@@ -46,7 +42,7 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
     private ArrayList<Closet> dataSet;
     private deleteClosetListener listener;
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Closet mItem;
 
         TextView textViewName;
@@ -63,7 +59,7 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
             this.textViewDescription = itemView.findViewById(R.id.textViewVersion);
             this.imageViewIcon = itemView.findViewById(R.id.imageView);
             this.trashBtn = itemView.findViewById(R.id.imgButton_del_closet);
-            this.statsBtn= itemView.findViewById(R.id.imgButton_stats_closet);
+            this.statsBtn = itemView.findViewById(R.id.imgButton_stats_closet);
             this.closetId = itemView.findViewById(R.id.closet_id_card);
         }
 
@@ -74,30 +70,28 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
         @Override
         public void onClick(View view) {
             final View view1 = view;
-            final Gson gson = new Gson();
             JsonObjectRequest request = new JsonObjectRequest(String.format(GET_CLOSET_URL, mItem.getId()), null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             System.out.println("Got closet from server");
                             Intent closetInfo = new Intent(view1.getContext(), ClosetInfoActivity.class);
-                            closetInfo.putExtra(view1.getContext().getString(R.string.closet), gson.fromJson(response.toString(), Closet.class));
+                            closetInfo.putExtra(view1.getContext().getString(R.string.closet), (Closet) JsonHandler.getInstance().fromString(response.toString(), Closet.class));
+                            closetInfo.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                             view1.getContext().startActivity(closetInfo);
                         }
                     }, new Response.ErrorListener() {
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            System.out.println("Failed to get closet info from server");
-                            Toast.makeText(view1.getContext(), "Something went wrong, Failed to get closet data", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    System.out.println("Failed to get closet info from server");
+                    Toast.makeText(view1.getContext(), "Something went wrong, Failed to get closet data", Toast.LENGTH_LONG).show();
+                }
+            });
 
-
+            request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             RequestQueueSingleton.getInstance(view.getContext()).getRequestQueue().add(request);
-
         }
-
     }
 
     public ClosetAdapter(ArrayList<Closet> data) {
@@ -148,15 +142,15 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
         ImageButton trashBtn = holder.trashBtn;
         ImageButton statsBtn = holder.statsBtn;
 
-        trashBtn.setOnClickListener(new View.OnClickListener(){
+        trashBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 System.out.println("delete closet with id " + String.valueOf(currentCloset.getId()));
                 final View finalView = view;
                 StringRequest request = new StringRequest(String.format(DELETE_CLOSET_URL, currentCloset.getId()),
-                        new Response.Listener<String>(){
+                        new Response.Listener<String>() {
                             @Override
-                            public void onResponse(String response){
+                            public void onResponse(String response) {
                                 System.out.println("Delete closet succeeded");
                                 Toast.makeText(finalView.getContext(), "Closet deleted successfully", Toast.LENGTH_LONG).show();
                                 notifyItemRemoved(listPosition);
@@ -172,6 +166,7 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
                     }
                 });
 
+                request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 RequestQueueSingleton.getInstance(view.getContext()).getRequestQueue().add(request);
             }
         });
@@ -185,9 +180,8 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
 
                             @Override
                             public void onResponse(JSONObject response) {
-                                Gson gson = new Gson();
                                 Intent statsIntent = new Intent(view1.getContext(), StatsActivity.class);
-                                statsIntent.putExtra(view1.getContext().getString(R.string.stats), gson.fromJson(response.toString(), Statistics.class));
+                                statsIntent.putExtra(view1.getContext().getString(R.string.stats), (Statistics) JsonHandler.getInstance().fromString(response.toString(), Statistics.class));
                                 view1.getContext().startActivity(statsIntent);
                             }
                         }, new Response.ErrorListener() {
@@ -210,7 +204,7 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
         return dataSet.size();
     }
 
-    public void setDeleteClosetListener(deleteClosetListener listener){
+    public void setDeleteClosetListener(deleteClosetListener listener) {
         this.listener = listener;
     }
 }

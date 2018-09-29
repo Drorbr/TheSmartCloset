@@ -23,6 +23,7 @@ public class SharedStrings {
 
     public static final String ITEM_URL = SERVER_URL + "/item";
     public static final String DELETE_ITEM_URL = ITEM_URL + "/delete/%s";
+    public static final String ADD_ITEM_URL = ITEM_URL + "/add/%s";
 
     //constants
     public static final int REQUEST_TIMEOUT = ((int) TimeUnit.SECONDS.toMillis(8));

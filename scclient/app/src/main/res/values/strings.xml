@@ -21,6 +21,7 @@
     <string name="item_recentlyUsed_key">Recently used</string>
     <string name="item">item</string>
     <string name="error_insert_closet">Something went wrong, the closet wat not registered</string>
+    <string name="error_insert_item">Something went wrong, the item wat not registered</string>
     <string name="add_closet_success">Closet added successfully</string>
     <string name="insert_closet_id">ID</string>
     <string name="error_assign_closet">something went wrong, failed to assign existing closet</string>
@@ -28,10 +29,20 @@
     <string name="stats_title">Statistics</string>
     <string name="most_used_key">Most Used Item</string>
     <string name="dummy">None</string>
-    <string name="most_used_more">more...</string>
+    <string name="most_used_more">more…</string>
     <string name="favorite_color_key">Favorite Color</string>
     <string name="stats">stats</string>
-    <string name="not_initiated">Not initiated yet...</string>
+    <string name="not_initiated">Not initiated yet…</string>
     <string name="no_items_available">This closet doesn\'t have items yet</string>
     <string name="error_get_user">Failed to add closet</string>
+    <string name="closet_id">closet_id</string>
+    <string name="add_item_type_key">Type</string>
+    <string name="add_item_title">Please insert the item\'s details</string>
+    <string name="add_item_foundAt_explain">(if the item is in your closet currently, leave with \"Me\")</string>
+    <string name="add_item_foundAt_key">Found at</string>
+    <string name="add_item_size_key">Size</string>
+    <string name="add_item_color_key">Color</string>
+    <string name="add_item_foundAt_default">Me</string>
+    <string name="error_get_closet">Failed to get closet info</string>
+    <string name="item_recentlyUsed_default">Item not used yet</string>
 </resources>
