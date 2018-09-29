@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Component
 public class scManager {
-    Logger logger = LogManager.getLogger(LoggingController.class);
+    Logger logger = LogManager.getLogger(scManager.class);
 
     @Autowired
     DBHandler dbHandler;

@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequestMapping("/scServer")
 public class ScServerController {
     scManager manager;
-    Logger logger = LogManager.getLogger(LoggingController.class);
+    Logger logger = LogManager.getLogger(ScServerController.class);
 
     @Autowired
     public void setManager(scManager manager) {

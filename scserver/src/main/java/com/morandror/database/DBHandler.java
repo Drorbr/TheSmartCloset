@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Component
 public class DBHandler {
-    Logger logger = LogManager.getLogger(LoggingController.class);
+    Logger logger = LogManager.getLogger(DBHandler.class);
 
     @Autowired
     private ClosetRepository closetRepository;
