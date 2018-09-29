@@ -8,7 +8,6 @@ import com.morandror.models.dbmodels.Closet;
 import com.morandror.models.dbmodels.Item;
 import com.morandror.models.dbmodels.User;
 import com.morandror.models.dbmodels.UserHasCloset;
-import com.morandror.scmanager.LoggingController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,14 +87,16 @@ public class DBHandler {
         userHasClosetRepository.saveAndFlush(userHasCloset);
     }
 
-    public void addItem(Item newItem, int closetID) {
+    public Closet addItem(Item newItem, int closetID) {
         logger.info("Database - Add new item");
         Optional<Closet> closet = getCloset(closetID);
         if (closet.isPresent()) {
             newItem.setCloset(closet.get());
             closet.get().getItems().add(newItem);
-            closetRepository.saveAndFlush(closet.get());
+            return closetRepository.saveAndFlush(closet.get());
         }
+
+        return null;
     }
 
     public String getFavoriteColor(int closetID) {

@@ -52,8 +52,8 @@ public class scManager {
         dbHandler.assignClosetToUser(userHasCloset);
     }
 
-    public void addItem(Item newItem, int closetID) {
-        dbHandler.addItem(newItem, closetID);
+    public Closet addItem(Item newItem, int closetID) {
+        return dbHandler.addItem(newItem, closetID);
     }
 
     public Statistics getClosetStatistics(int closetID) {

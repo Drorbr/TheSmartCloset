@@ -94,6 +94,17 @@ public class ScServerController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @RequestMapping(value = "/item/add/{closetID}", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> addItem(@RequestBody Item newItem, @PathVariable("closetID") int closetID) {
+        logger.info("Add item post request");
+        if (newItem.getId() == 0) {
+            Closet closet = manager.addItem(newItem, closetID);
+            return new ResponseEntity<Object>(closet, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     @RequestMapping(value = "/closet/statistics/{id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> getStatistics(@PathVariable("id") int closetID) {
         logger.info("Get closet statistics - calculate statistics for closet id: " + closetID);
@@ -123,13 +134,6 @@ public class ScServerController {
         manager.assignClosetToUser(userHasCloset);
     }
 
-    @RequestMapping(value = "/item/add/{closetID}", method = RequestMethod.POST)
-    public void addItem(@RequestBody Item newItem, @PathVariable("closetID") int closetID) {
-        logger.info("Add item post request");
-        if (newItem.getId() == 0) {
-            manager.addItem(newItem, closetID);
-        }
-    }
 
     @RequestMapping(value = "/item/delete/{itemID}", method = RequestMethod.GET)
     public ResponseEntity<?> deleteItem(@PathVariable("itemID") int itemID) {
