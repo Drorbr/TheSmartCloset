@@ -22,8 +22,10 @@ import com.google.gson.Gson;
 import com.morandror.scclient.R;
 import com.morandror.scclient.activities.ClosetInfoActivity;
 import com.morandror.scclient.activities.StatsActivity;
+import com.morandror.scclient.activities.home_page_activity2;
 import com.morandror.scclient.models.Closet;
 import com.morandror.scclient.models.Statistics;
+import com.morandror.scclient.models.User;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
 import org.json.JSONObject;
@@ -31,9 +33,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static com.morandror.scclient.utils.SharedStrings.DELETE_CLOSET_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_STATS_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_BY_ID_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHolder> {
@@ -68,9 +73,29 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
 
         @Override
         public void onClick(View view) {
-            Intent closetInfo = new Intent(view.getContext(), ClosetInfoActivity.class);
-            closetInfo.putExtra(view.getContext().getString(R.string.closet), mItem);
-            view.getContext().startActivity(closetInfo);
+            final View view1 = view;
+            final Gson gson = new Gson();
+            JsonObjectRequest request = new JsonObjectRequest(String.format(GET_CLOSET_URL, mItem.getId()), null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            System.out.println("Got closet from server");
+                            Intent closetInfo = new Intent(view1.getContext(), ClosetInfoActivity.class);
+                            closetInfo.putExtra(view1.getContext().getString(R.string.closet), gson.fromJson(response.toString(), Closet.class));
+                            view1.getContext().startActivity(closetInfo);
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println("Failed to get closet info from server");
+                            Toast.makeText(view1.getContext(), "Something went wrong, Failed to get closet data", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
+            RequestQueueSingleton.getInstance(view.getContext()).getRequestQueue().add(request);
+
         }
 
     }

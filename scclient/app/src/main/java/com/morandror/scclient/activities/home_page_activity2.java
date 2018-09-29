@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,16 +18,13 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.morandror.scclient.adapters.ClosetAdapter;
 import com.morandror.scclient.R;
-import com.morandror.scclient.adapters.DeleteItemListener;
 import com.morandror.scclient.adapters.deleteClosetListener;
 import com.morandror.scclient.models.Closet;
-import com.morandror.scclient.models.Item;
 import com.morandror.scclient.models.Statistics;
 import com.morandror.scclient.models.User;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
@@ -36,12 +32,9 @@ import com.morandror.scclient.utils.http.RequestQueueSingleton;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static com.morandror.scclient.activities.MainActivity.mGoogleSignInClient;
-import static com.morandror.scclient.utils.SharedStrings.DELETE_CLOSET_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_STATS;
-import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class home_page_activity2 extends AppCompatActivity implements deleteClosetListener{
@@ -52,7 +45,7 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
     private static ArrayList<Closet> data;
     static View.OnClickListener myOnClickListener;
     private BottomNavigationView bottomNavigationView;
-    private Gson gson;
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,16 +103,16 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
 
     private void startStatsActivity() {
 
-        //debug
-//        Item item1 = new Item("Home", null, new Date(), 42, "Zara", "Blue", 2, "Pants");
-//        Item item2 = new Item("Home", null, new Date(), 23, "Pull n' Bear", "Green", 3, "Shirt");
-//        ArrayList<Item> list = new ArrayList<>();
-//        list.add(item1);
-//        list.add(item2);
-//        Statistics debugStats = new Statistics(item1,  "Blue", list, list);
-//
-//        Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
-//        statsIntent.putExtra(getString(R.string.stats),debugStats);
+//        //debug
+////        Item item1 = new Item("Home", null, new Date(), 42, "Zara", "Blue", 2, "Pants");
+////        Item item2 = new Item("Home", null, new Date(), 23, "Pull n' Bear", "Green", 3, "Shirt");
+////        ArrayList<Item> list = new ArrayList<>();
+////        list.add(item1);
+////        list.add(item2);
+////        Statistics debugStats = new Statistics(item1,  "Blue", list, list);
+////
+////        Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
+////        statsIntent.putExtra(getString(R.string.stats),debugStats);
 //        startActivity(statsIntent);
         //debug
         JsonObjectRequest request = new JsonObjectRequest

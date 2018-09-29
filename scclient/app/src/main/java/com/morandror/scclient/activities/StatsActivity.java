@@ -85,17 +85,14 @@ public class StatsActivity extends AppCompatActivity {
 
     private void prepareListData() {
         listDataHeader = new ArrayList<>();
-        listDataHeader.add(LAST_DAYS);
-        listDataHeader.add(NEWEST);
-
         listDataChild = new HashMap<>();
-        listDataChild.put(LAST_DAYS, null);
-        listDataChild.put(NEWEST, null);
 
         if (stats.getLastDays() != null && !stats.getLastDays().isEmpty())
+            listDataHeader.add(LAST_DAYS);
             listDataChild.put(LAST_DAYS, stats.getLastDays());
 
         if (stats.getNewestItems() != null && !stats.getNewestItems().isEmpty())
+            listDataHeader.add(NEWEST);
             listDataChild.put(NEWEST, stats.getNewestItems());
     }
 }

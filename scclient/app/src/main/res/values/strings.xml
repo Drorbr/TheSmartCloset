@@ -33,4 +33,5 @@
     <string name="stats">stats</string>
     <string name="not_initiated">Not initiated yet...</string>
     <string name="no_items_available">This closet doesn\'t have items yet</string>
+    <string name="error_get_user">Failed to add closet</string>
 </resources>

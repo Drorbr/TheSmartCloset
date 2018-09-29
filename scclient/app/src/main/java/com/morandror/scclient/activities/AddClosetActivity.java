@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Closet;
+import com.morandror.scclient.models.Statistics;
 import com.morandror.scclient.models.User;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
@@ -35,6 +36,8 @@ import java.util.LinkedHashMap;
 import static com.morandror.scclient.utils.SharedStrings.ADD_CLOSET_AND_ASSIGN_URL;
 import static com.morandror.scclient.utils.SharedStrings.ASSIGN_CLOSET_TO_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_CLOSET_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_BY_EMAIL_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_BY_ID_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class AddClosetActivity extends AppCompatActivity {
@@ -48,6 +51,7 @@ public class AddClosetActivity extends AppCompatActivity {
     RadioButton existingClosetRdBtn;
     LinkedHashMap<EditText, String> etAndStringDict;
     EditText closetIdEt;
+    Closet newCloset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,11 +147,8 @@ public class AddClosetActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Closet newCloset = gson.fromJson(response.toString(), Closet.class);
-                        if (user.getClosets() == null)
-                            user.setClosets(new HashSet<Closet>());
-                        user.getClosets().add(newCloset);
-                        assignClosetToUser(newCloset);
+                        newCloset = gson.fromJson(response.toString(), Closet.class);
+                        assignClosetToUser();
                     }
                 }, new Response.ErrorListener() {
 
@@ -198,31 +199,27 @@ public class AddClosetActivity extends AppCompatActivity {
 
         try {
             JSONObject newClosetObj = new JSONObject(closet.toJson());
-            JsonObjectRequest request = new JsonObjectRequest(
-                    String.format(ADD_CLOSET_AND_ASSIGN_URL, user.getId()), newClosetObj, new Response.Listener<JSONObject>() {
+            JsonObjectRequest request = new JsonObjectRequest(String.format(ADD_CLOSET_AND_ASSIGN_URL, user.getId()), newClosetObj,
+                    new Response.Listener<JSONObject>() {
 
-                @Override
-                public void onResponse(JSONObject response) {
-                    System.out.println(getString(R.string.add_closet_success));
-                    Closet newCloset = gson.fromJson(response.toString(), Closet.class);
-                    if (user.getClosets() == null)
-                        user.setClosets(new HashSet<Closet>());
-                    user.getClosets().add(newCloset);
-                    returnToUserPage();
-                }
-            }, new Response.ErrorListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            System.out.println(getString(R.string.add_closet_success));
+                            newCloset = gson.fromJson(response.toString(), Closet.class);
+                            returnToUserPage();
+                        }
+                    }, new Response.ErrorListener() {
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    System.out.println("Failed to add new closet - " + error.toString());
-                    removeProgressBar();
-                    errorText.setVisibility(View.VISIBLE);
-                    errorText.setText(R.string.error_insert_closet);
-                }
-            });
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println("Failed to add new closet - " + error.toString());
+                            removeProgressBar();
+                            errorText.setVisibility(View.VISIBLE);
+                            errorText.setText(R.string.error_insert_closet);
+                        }
+                    });
 
 
-            // Add the request to the RequestQueue.
             RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
         } catch (JSONException | JsonProcessingException e) {
             e.printStackTrace();
@@ -230,13 +227,34 @@ public class AddClosetActivity extends AppCompatActivity {
     }
 
     private void returnToUserPage() {
-        Intent startNewActivity = new Intent(getBaseContext(), home_page_activity2.class);
-        startNewActivity.putExtra(getString(R.string.user), user);
-        startActivity(startNewActivity);
+        JsonObjectRequest request = new JsonObjectRequest(
+                String.format(GET_USER_BY_ID_URL, user.getId()), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Got user from server");
+                        Intent startNewActivity = new Intent(getBaseContext(), home_page_activity2.class);
+                        startNewActivity.putExtra(getString(R.string.user), gson.fromJson(response.toString(), User.class));
+                        startActivity(startNewActivity);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Failed to get user from server");
+                        removeProgressBar();
+                        errorText.setVisibility(View.VISIBLE);
+                        errorText.setText(R.string.error_get_user);
+                    }
+                });
+
+
+        RequestQueueSingleton.getInstance(this).getRequestQueue().add(request);
+
     }
 
 
-    private void assignClosetToUser(Closet newCloset) {
+    private void assignClosetToUser() {
         StringRequest request = new StringRequest(String.format(ASSIGN_CLOSET_TO_USER_URL, user.getId(), newCloset.getId()),
                 new Response.Listener<String>(){
                     @Override

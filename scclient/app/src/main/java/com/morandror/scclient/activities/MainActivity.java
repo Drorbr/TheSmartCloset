@@ -5,15 +5,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpResponse;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.gms.auth.api.Auth;
@@ -36,8 +34,9 @@ import java.util.HashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_USER_URL;
 import static com.morandror.scclient.utils.SharedStrings.GET_USER_KEY;
-import static com.morandror.scclient.utils.SharedStrings.GET_USER_URL;
+import static com.morandror.scclient.utils.SharedStrings.GET_USER_BY_EMAIL_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
+import static com.morandror.scclient.utils.SharedStrings.RESPONSE_USER_NO_EXIST;
 
 public class MainActivity extends AppCompatActivity {
     static GoogleSignInClient mGoogleSignInClient;
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                         put(GET_USER_KEY,account.getEmail());
                     }});
                     JsonObjectRequest request = new JsonObjectRequest
-                            (GET_USER_URL, jsonObject, new Response.Listener<JSONObject>() {
+                            (GET_USER_BY_EMAIL_URL, jsonObject, new Response.Listener<JSONObject>() {
 
                                 @Override
                                 public void onResponse(JSONObject response) {
@@ -154,8 +153,15 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    User newUser = new User(account);
-                                    addNewUser(newUser);
+                                    if (error.networkResponse.statusCode == RESPONSE_USER_NO_EXIST) {
+                                        User newUser = new User(account);
+                                        addNewUser(newUser);
+                                    } else {
+                                        Toast.makeText(getBaseContext(), "Failed to get user data from server", Toast.LENGTH_LONG).show();
+                                        showSignInButton();
+                                        removeProgressBar();
+                                        mGoogleSignInClient.signOut();
+                                    }
                                 }
                             });
 
