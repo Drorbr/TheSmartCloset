@@ -36,7 +36,7 @@ public class scManager {
         return dbHandler.addUser(newUser);
     }
 
-    public User getUser(String emailObj) {
+    public User getUserByEmail(String emailObj) {
         return dbHandler.getUser(emailObj);
     }
 
@@ -80,5 +80,9 @@ public class scManager {
         List<Item> newestItems = dbHandler.getUserNewestItems(userID);
 
         return new Statistics(favoriteItem, color, lastDays, newestItems);
+    }
+
+    public Optional<User> getUserByID(int userID) {
+        return dbHandler.getUserByID(userID);
     }
 }

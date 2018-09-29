@@ -11,6 +11,7 @@ import com.morandror.scmanager.scManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,46 +41,79 @@ public class ScServerController {
     }
 
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
-    public User addUser(@RequestBody User newUser) {
+    public @ResponseBody ResponseEntity<?> addUser(@RequestBody User newUser) {
         logger.info("Add user post request - Add user with email: " + newUser.getEmail());
         if (newUser.getId() == 0) {
-            return manager.addUser(newUser);
+            User addedUser =  manager.addUser(newUser);
+            return new ResponseEntity<Object>(addedUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        return null;
     }
 
     @RequestMapping(value = "/user/get", method = RequestMethod.POST)
-    public User getUser(@RequestBody EmailObj emailObj) {
-        logger.info("Get user by email - post request. Search for user with id: " + emailObj.getEmail());
-        return manager.getUser(emailObj.getEmail());
+    public @ResponseBody ResponseEntity<?> getUserByEmail(@RequestBody EmailObj emailObj) {
+        logger.info("Get user by email - post request. Search for user with email: " + emailObj.getEmail());
+        User user = manager.getUserByEmail(emailObj.getEmail());
+        if(user != null){
+            return new ResponseEntity<Object>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/user/get/{id}", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> getUserByID(@PathVariable("id") int userID) {
+        logger.info("Get user by id - post request. Search for user with id: " + userID);
+        Optional<User> user = manager.getUserByID(userID);
+        return user.<ResponseEntity<?>>map(user1 -> new ResponseEntity<>(user1, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @RequestMapping(value = "/closet/get/{id}", method = RequestMethod.GET)
-    public Closet getCloset(@PathVariable("id") int closetID) {
+    public @ResponseBody ResponseEntity<?> getCloset(@PathVariable("id") int closetID) {
         logger.info("Get closet GET request - got closet id: " + closetID);
         Optional<Closet> closet = manager.getCloset(closetID);
-        return closet.orElse(null);
+        if(closet.isPresent()){
+            return new ResponseEntity<Object>(closet, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/closet/add/{userID}", method = RequestMethod.POST)
-    public Closet addCloset(@RequestBody Closet newCloset, @PathVariable("userID") int userID) {
+    public @ResponseBody ResponseEntity<?> addCloset(@RequestBody Closet newCloset, @PathVariable("userID") int userID) {
         logger.info("Add closet post request. Add the closet to user id: " + userID);
         if (newCloset.getId() == 0) {
             Closet closet =  manager.addCloset(newCloset);
             logger.info("Assign Closet id: " + closet.getId() + " to user id: " + userID);
             UserHasCloset userHasCloset = new UserHasCloset(userID, closet.getId());
             manager.assignClosetToUser(userHasCloset);
-            return closet;
+            return new ResponseEntity<Object>(closet, HttpStatus.OK);
         }
 
-        return null;
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/closet/statistics/{id}", method = RequestMethod.GET)
-    public Statistics getStatistics(@PathVariable("id") int closetID) {
+    public @ResponseBody ResponseEntity<?> getStatistics(@PathVariable("id") int closetID) {
         logger.info("Get closet statistics - calculate statistics for closet id: " + closetID);
-        return manager.getClosetStatistics(closetID);
+        Statistics statistics = manager.getClosetStatistics(closetID);
+        if(statistics != null){
+            return new ResponseEntity<Object>(statistics, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/user/statistics/{id}", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> getStatisticsOfUser(@PathVariable("id") int userID) {
+        logger.info("Get user statistics - calculate statistics for user id: " + userID);
+        Statistics statistics = manager.getUserStatistics(userID);
+        if(statistics != null){
+            return new ResponseEntity<Object>(statistics, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/user/AssignCloset/{userId}/{closetId}", method = RequestMethod.GET)
@@ -107,11 +141,5 @@ public class ScServerController {
     public ResponseEntity<?> deleteCloset(@PathVariable("closetID") int closetID) {
         logger.info("delete closet post request - delete closet id " + closetID);
         return manager.deleteCloset(closetID);
-    }
-
-    @RequestMapping(value = "/user/statistics/{id}", method = RequestMethod.GET)
-    public Statistics getStatisticsOfUser(@PathVariable("id") int userID) {
-        logger.info("Get user statistics - calculate statistics for user id: " + userID);
-        return manager.getUserStatistics(userID);
     }
 }

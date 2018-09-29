@@ -68,7 +68,7 @@ public class DBHandler {
             logger.info("Found closet with id: " + closet.get().getId());
         }
         else{
-            logger.info("Closet with id: " + closetID + "does not dound in the data base");
+            logger.info("Closet with id: " + closetID + "does not found in the database");
         }
 
         return closet;
@@ -161,5 +161,18 @@ public class DBHandler {
         List<Item> list = itemRepository.getUserRecentlyAdded(userID);
         logger.info("Database - found " + list.size() + " item(s) of user id: " + userID + " that added to the closet in the last 7 days");
         return list;
+    }
+
+    public Optional<User> getUserByID(int userID) {
+        logger.info("Database - Get user by ID");
+        Optional<User> user =  userRepository.findById(userID);
+        if(user.isPresent()){
+            logger.info("Found user with id: " + user.get().getId());
+        }
+        else{
+            logger.info("User with id: " + userID + "does not found in the database");
+        }
+
+        return user;
     }
 }
