@@ -13,18 +13,4 @@
         android:paddingTop="5dp"
         android:textSize="17dip" />
 
-    <!--<Space-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="1" />-->
-
-    <!--<ImageButton-->
-        <!--android:id="@+id/del_item_btn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:paddingTop="@dimen/trash_icon_padding"-->
-        <!--android:paddingStart="@dimen/trash_icon_padding"-->
-        <!--android:paddingEnd="@dimen/trash_icon_padding"-->
-        <!--android:background="@color/color_white"-->
-        <!--android:src="@drawable/garbage" />-->
 </LinearLayout>

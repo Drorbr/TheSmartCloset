@@ -66,7 +66,7 @@ public class StatsActivity extends AppCompatActivity {
 
         prepareListData();
 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, R.layout.list_item);
 
         expListView.setAdapter(listAdapter);
 

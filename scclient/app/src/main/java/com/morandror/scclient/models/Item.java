@@ -3,6 +3,7 @@ package com.morandror.scclient.models;
 import java.util.Date;
 
 public class Item extends BaseModel {
+    private int id;
     private String foundAt;
     private String image;
     private Date recentlyUsed;
@@ -24,6 +25,14 @@ public class Item extends BaseModel {
     }
 
     public Item() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFoundAt() {
@@ -92,6 +101,6 @@ public class Item extends BaseModel {
 
     @Override
     public String toString() {
-        return this.brand;
+        return String.format("%s %s from %s", this.color, this.type, this.brand);
     }
 }

@@ -56,7 +56,7 @@ public class ClosetInfoActivity extends AppCompatActivity {
             showNoItems();
         else {
             prepareListData();
-            listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+            listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, R.layout.list_item_with_delete);
             expListView.setAdapter(listAdapter);
             initOnClicks();
         }
