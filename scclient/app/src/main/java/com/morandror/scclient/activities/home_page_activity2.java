@@ -107,6 +107,7 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
                     public void onResponse(JSONObject response) {
                         Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
                         statsIntent.putExtra(getString(R.string.stats), (Statistics) JsonHandler.getInstance().fromString(response.toString(), Statistics.class));
+                        statsIntent.putExtra(getString(R.string.stats_custom_title), String.format("%s's closets", user.getFirstName()));
                         startActivity(statsIntent);
                     }
                 }, new Response.ErrorListener() {

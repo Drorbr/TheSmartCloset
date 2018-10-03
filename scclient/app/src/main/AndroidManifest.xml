@@ -29,7 +29,8 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".activities.AddItemActivity"></activity>
+        <activity android:name=".activities.AddItemActivity" />
+        <activity android:name=".activities.LoanItemActivity"></activity>
     </application>
 
 </manifest>

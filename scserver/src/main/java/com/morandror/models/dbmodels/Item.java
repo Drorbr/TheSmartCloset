@@ -1,5 +1,6 @@
 package com.morandror.models.dbmodels;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.morandror.models.BaseModel;
 
@@ -20,14 +21,19 @@ public class Item extends BaseModel {
     @Column(name = "found_at")
     private String foundAt;
 
+    @Column(name = "friend_email")
+    private String friendEmail;
+
     @Column(name = "image")
     private byte[] image;
 
     //@NotNull
     @Column(name = "recently_used")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date recently_used;
 
     @Column(name = "insert_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date insert_date;
 
     @NotNull
@@ -143,5 +149,13 @@ public class Item extends BaseModel {
 
     public void setInsert_date(Date insert_date) {
         this.insert_date = insert_date;
+    }
+
+    public String getFriendEmail() {
+        return friendEmail;
+    }
+
+    public void setFriendEmail(String friendEmail) {
+        this.friendEmail = friendEmail;
     }
 }

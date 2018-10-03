@@ -1,6 +1,7 @@
 package com.morandror.models.dbmodels;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.morandror.models.BaseModel;
 
 import javax.persistence.*;
@@ -40,6 +41,7 @@ public class Closet extends BaseModel {
 
     @NotNull
     @Column(name = "insert_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date insertDate;
 
     @JsonBackReference

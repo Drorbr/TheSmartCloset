@@ -24,6 +24,7 @@ public class StatsActivity extends AppCompatActivity {
     ExpandableListAdapter listAdapter;
     List<String> listDataHeader;
     HashMap<String, List<Item>> listDataChild;
+    String title;
 
     private static final String LAST_DAYS = "Last days";
     private static final String NEWEST = "Newest items";
@@ -34,11 +35,15 @@ public class StatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stats);
 
         stats = (Statistics) getIntent().getSerializableExtra(getString(R.string.stats));
+        title = getIntent().getStringExtra(getString(R.string.stats_custom_title));
 
         setValues();
     }
 
     private void setValues() {
+        final TextView mTextView = findViewById(R.id.stats_title);
+        mTextView.setText(String.format(getString(R.string.stats_title), title));
+
         TextView mostUsed = findViewById(R.id.most_used_value);
         if (!TextUtils.isEmpty(stats.getMostUsed().getBrand()))
             mostUsed.setText(stats.getMostUsed().getBrand());
