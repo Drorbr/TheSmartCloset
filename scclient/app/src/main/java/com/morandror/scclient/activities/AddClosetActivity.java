@@ -230,6 +230,7 @@ public class AddClosetActivity extends AppCompatActivity {
                         System.out.println("Got user from server");
                         Intent startNewActivity = new Intent(getBaseContext(), home_page_activity2.class);
                         startNewActivity.putExtra(getString(R.string.user), (User) JsonHandler.getInstance().fromString(response.toString(), User.class));
+                        startNewActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(startNewActivity);
                     }
                 }, new Response.ErrorListener() {
