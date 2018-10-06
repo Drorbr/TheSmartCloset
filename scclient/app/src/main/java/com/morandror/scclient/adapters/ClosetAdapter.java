@@ -78,7 +78,6 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
                             System.out.println("Got closet from server");
                             Intent closetInfo = new Intent(view1.getContext(), ClosetInfoActivity.class);
                             closetInfo.putExtra(view1.getContext().getString(R.string.closet), (Closet) JsonHandler.getInstance().fromString(response.toString(), Closet.class));
-                            closetInfo.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                             view1.getContext().startActivity(closetInfo);
                         }
                     }, new Response.ErrorListener() {

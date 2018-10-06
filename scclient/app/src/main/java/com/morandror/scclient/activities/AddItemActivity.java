@@ -111,6 +111,7 @@ public class AddItemActivity extends AppCompatActivity {
     private void returnToUserPage(Closet closet) {//TODO:change to get closet
         Intent startNewActivity = new Intent(getBaseContext(), ClosetInfoActivity.class);
         startNewActivity.putExtra(getString(R.string.closet), closet);
+        startNewActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(startNewActivity);
     }
 

@@ -73,6 +73,7 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
                                 switch (item.getItemId()) {
                                     case R.id.add_closet:
                                         Intent startNewActivity = new Intent(getBaseContext(), AddClosetActivity.class);
+                                        startNewActivity.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                                         startNewActivity.putExtra(getString(R.string.user), user);
                                         startActivity(startNewActivity);
                                         return true;
@@ -108,6 +109,7 @@ public class home_page_activity2 extends AppCompatActivity implements deleteClos
                         Intent statsIntent = new Intent(getBaseContext(), StatsActivity.class);
                         statsIntent.putExtra(getString(R.string.stats), (Statistics) JsonHandler.getInstance().fromString(response.toString(), Statistics.class));
                         statsIntent.putExtra(getString(R.string.stats_custom_title), String.format("%s's closets", user.getFirstName()));
+                        statsIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                         startActivity(statsIntent);
                     }
                 }, new Response.ErrorListener() {
