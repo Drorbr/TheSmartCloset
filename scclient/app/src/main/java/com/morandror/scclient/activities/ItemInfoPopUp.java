@@ -16,10 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Item;
+import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
 import java.text.SimpleDateFormat;
+
+import static com.morandror.scclient.utils.SharedStrings.BACK_ITEM_URL;
+import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
 public class ItemInfoPopUp extends Activity {
 
@@ -82,10 +90,13 @@ public class ItemInfoPopUp extends Activity {
         }
 
         Button remainder = findViewById(R.id.button_reminder);
+        Button backToCloset = findViewById(R.id.button_set_back);
         if (location.getText().toString().equalsIgnoreCase("me")) {
             remainder.setEnabled(false);
+            backToCloset.setEnabled(false);
         } else {
             remainder.setEnabled(true);
+            backToCloset.setEnabled(true);
         }
     }
 
@@ -101,12 +112,36 @@ public class ItemInfoPopUp extends Activity {
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL, new String[]{item.getFriendEmail()});
         i.putExtra(Intent.EXTRA_SUBJECT, "Reminder from 'Ths Smart Closet' App");
-        String msg = String.format("Hi %s,\nDon't forget to bring my back my %s.\nThanks in advance", item.getFoundAt(), item);
+        String msg = String.format("Hi %s,\nDon't forget to bring me back my %s.\nThanks in advance", item.getFoundAt(), item);
         i.putExtra(Intent.EXTRA_TEXT, msg);
         try {
             startActivity(Intent.createChooser(i, "Send mail..."));
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(ItemInfoPopUp.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void setItemBackInCloset(final View view) {
+        StringRequest request = new StringRequest(String.format(BACK_ITEM_URL, item.getId()),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println("Set item back in the closet succeeded");
+                        TextView location = findViewById(R.id.item_location);
+                        location.setText(R.string.ME);
+                        findViewById(R.id.button_reminder).setEnabled(false);
+                        findViewById(R.id.button_set_back).setEnabled(false);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String msg = "Failed to set item back in the closet";
+                System.out.println(msg);
+                Toast.makeText(view.getContext(), msg, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(REQUEST_TIMEOUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueueSingleton.getInstance(view.getContext()).getRequestQueue().add(request);
     }
 }

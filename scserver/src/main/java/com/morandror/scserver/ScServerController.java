@@ -158,4 +158,10 @@ public class ScServerController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value = "/item/setback/{itemID}", method = RequestMethod.GET)
+    public ResponseEntity<?> setItemBackInCloset(@PathVariable("itemID") int itemID) {
+        logger.info("set item back in closet - get request. Got item id: " + itemID);
+        return manager.setItemBackInCloset(itemID);
+    }
 }

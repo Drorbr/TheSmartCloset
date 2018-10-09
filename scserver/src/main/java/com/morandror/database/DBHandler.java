@@ -216,4 +216,14 @@ public class DBHandler {
              return itemRepository.saveAndFlush(item);
         }).orElseThrow(() -> new ResourceNotFoundException("Item id:" + itemID + " not found"));
     }
+
+    public ResponseEntity<?> setItemBackInCloset(int itemID) {
+        logger.info("Database - set item back in closet");
+        return itemRepository.findById(itemID).map(item -> {
+            item.setFoundAt("Me");
+            item.setFriendEmail(null);
+            itemRepository.saveAndFlush(item);
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("Item id:" + itemID + " not found"));
+    }
 }

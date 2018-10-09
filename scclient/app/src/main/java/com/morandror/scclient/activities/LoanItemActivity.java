@@ -117,6 +117,7 @@ public class LoanItemActivity extends AppCompatActivity {
     private void returnToItemPage(Item item) {
         Intent startNewActivity = new Intent(getBaseContext(), ItemInfoPopUp.class);
         startNewActivity.putExtra(getString(R.string.item), item);
+        startNewActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(startNewActivity);
     }
 

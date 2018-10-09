@@ -18,13 +18,13 @@
         android:textSize="@dimen/title" />
 
     <EditText
-        android:id="@+id/loan_item_email_val"
+        android:id="@+id/loan_item_first_name_val"
         android:layout_width="221dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
-        android:hint="Email"
+        android:hint="First Name"
         android:inputType="textPersonName" />
 
     <EditText
@@ -38,13 +38,13 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/loan_item_first_name_val"
+        android:id="@+id/loan_item_email_val"
         android:layout_width="221dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:ems="10"
-        android:hint="First Name"
+        android:hint="Email"
         android:inputType="textPersonName" />
 
     <!--    <TextView

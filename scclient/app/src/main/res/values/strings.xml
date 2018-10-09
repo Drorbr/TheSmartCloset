@@ -49,4 +49,6 @@
     <string name="item_loan_to">Loan to</string>
     <string name="item_send_reminder">Send Reminder</string>
     <string name="item_id">item_id</string>
+    <string name="back_in_the_closet">Back In The Closet</string>
+    <string name="ME">Me</string>
 </resources>

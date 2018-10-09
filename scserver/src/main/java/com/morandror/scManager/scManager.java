@@ -90,4 +90,8 @@ public class scManager {
     public Item loanItem(int itemID, Friend friend) {
         return dbHandler.loanItem(itemID, friend);
     }
+
+    public ResponseEntity<?> setItemBackInCloset(int itemID) {
+        return dbHandler.setItemBackInCloset(itemID);
+    }
 }

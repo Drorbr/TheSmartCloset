@@ -139,4 +139,18 @@
         app:layout_constraintStart_toEndOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/item_location" />
 
+    <Button
+        android:id="@+id/button_set_back"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/back_in_the_closet"
+        android:onClick="setItemBackInCloset"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_reminder"
+        app:layout_constraintVertical_bias="0.571" />
+
 </android.support.constraint.ConstraintLayout>
