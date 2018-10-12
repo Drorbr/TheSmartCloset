@@ -89,13 +89,13 @@ public class ItemInfoPopUp extends Activity {
             }
         }
 
-        Button remainder = findViewById(R.id.button_reminder);
+        Button reminder = findViewById(R.id.button_reminder);
         Button backToCloset = findViewById(R.id.button_set_back);
         if (location.getText().toString().equalsIgnoreCase("me")) {
-            remainder.setEnabled(false);
+            reminder.setEnabled(false);
             backToCloset.setEnabled(false);
         } else {
-            remainder.setEnabled(true);
+            reminder.setEnabled(true);
             backToCloset.setEnabled(true);
         }
     }
@@ -107,7 +107,7 @@ public class ItemInfoPopUp extends Activity {
         startActivity(loanItem);
     }
 
-    public void sendRemainder(View view) {
+    public void sendReminder(View view) {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL, new String[]{item.getFriendEmail()});

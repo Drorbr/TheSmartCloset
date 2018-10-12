@@ -133,7 +133,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:enabled="false"
-        android:onClick="sendRemainder"
+        android:onClick="sendReminder"
         android:text="@string/item_send_reminder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline3"

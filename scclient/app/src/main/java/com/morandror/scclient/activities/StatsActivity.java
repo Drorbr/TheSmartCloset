@@ -45,7 +45,7 @@ public class StatsActivity extends AppCompatActivity {
         mTextView.setText(String.format(getString(R.string.stats_title), title));
 
         TextView mostUsed = findViewById(R.id.most_used_value);
-        if (!TextUtils.isEmpty(stats.getMostUsed().getBrand()))
+        if (stats.getMostUsed()!= null && !TextUtils.isEmpty(stats.getMostUsed().getBrand()))
             mostUsed.setText(stats.getMostUsed().getBrand());
         mostUsed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +57,7 @@ public class StatsActivity extends AppCompatActivity {
         });
 
         TextView lovedColor = findViewById(R.id.loved_color_value);
-        if (!TextUtils.isEmpty(stats.getFavoriteColor())) {
+        if (stats.getFavoriteColor()!= null && !TextUtils.isEmpty(stats.getFavoriteColor())) {
             lovedColor.setText(stats.getFavoriteColor());
             try {
                 int colorInt = Color.parseColor(stats.getFavoriteColor());

@@ -88,7 +88,7 @@ public class AddItemActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             System.out.println("Item added successfully");
-                            returnToUserPage((Closet) JsonHandler.getInstance().fromString(response.toString(), Closet.class));
+                            returnToClosetInfo((Closet) JsonHandler.getInstance().fromString(response.toString(), Closet.class));
                         }
                     }, new Response.ErrorListener() {
 
@@ -108,7 +108,7 @@ public class AddItemActivity extends AppCompatActivity {
         }
     }
 
-    private void returnToUserPage(Closet closet) {//TODO:change to get closet
+    private void returnToClosetInfo(Closet closet) {
         Intent startNewActivity = new Intent(getBaseContext(), ClosetInfoActivity.class);
         startNewActivity.putExtra(getString(R.string.closet), closet);
         startNewActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
