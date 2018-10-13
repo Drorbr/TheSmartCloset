@@ -17,6 +17,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Closet;
 import com.morandror.scclient.models.Item;
+import com.morandror.scclient.models.QrCodeData;
 import com.morandror.scclient.utils.JsonHandler;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
@@ -37,6 +38,7 @@ public class AddItemActivity extends AppCompatActivity {
     LinkedHashMap<EditText, String> etAndStringDict;
     Item newItem;
     int closetId;
+    QrCodeData qrCodeData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,19 @@ public class AddItemActivity extends AppCompatActivity {
                 parent = (ViewGroup) errorText.getParent();
                 index = parent.indexOfChild(errorText);
                 closetId = getIntent().getIntExtra(getString(R.string.closet_id), 0);
+                qrCodeData = (QrCodeData) getIntent().getSerializableExtra(getString(R.string.qrData));
                 etAndStringDict = initEtAndStringDict();
+
+                if(qrCodeData != null) {
+                    EditText editText = findViewById(R.id.add_item_type_val);
+                    editText.setText(qrCodeData.getType());
+                    editText = findViewById(R.id.add_item_brand_val);
+                    editText.setText(qrCodeData.getBrand());
+                    editText = findViewById(R.id.add_item_color_val);
+                    editText.setText(qrCodeData.getColor());
+                    editText = findViewById(R.id.add_item_size_val);
+                    editText.setText(qrCodeData.getSize());
+                }
             }
         });
     }
@@ -155,7 +169,15 @@ public class AddItemActivity extends AppCompatActivity {
         item.setFoundAt(etAndStringDict.get((EditText) findViewById(R.id.add_item_foundAt_val)));
         item.setUsage(0);
         item.setInsert_date(new Date());
+        item.setImage(qrCodeData != null ? qrCodeData.getImage() : null);
 
         return item;
+    }
+
+    public void scanQR(View view) {
+        Intent scanQR = new Intent(getBaseContext(), ScanQRActivity.class);
+        scanQR.putExtra(getString(R.string.closet_id), closetId);
+        scanQR.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(scanQR);
     }
 }
