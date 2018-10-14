@@ -54,7 +54,7 @@ public class ScanQRActivity extends AppCompatActivity {
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.QR_CODE).build();
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
-                .setRequestedPreviewSize(640, 480).build();
+                .setRequestedPreviewSize(640, 480).setAutoFocusEnabled(true).build();
 
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -102,7 +102,7 @@ public class ScanQRActivity extends AppCompatActivity {
                             if (vibrator != null) {
                                 vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                             }
-                            
+
                             qrCodeData = (QrCodeData) JsonHandler.getInstance().fromString(qrCode.valueAt(0).displayValue, QrCodeData.class);
 
                             Intent addItem = new Intent(getBaseContext(), AddItemActivity.class);
