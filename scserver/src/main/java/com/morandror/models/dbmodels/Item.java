@@ -1,5 +1,6 @@
 package com.morandror.models.dbmodels;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.morandror.models.BaseModel;
 
@@ -24,9 +25,11 @@ public class Item extends BaseModel {
     private byte[] image;
 
     //@NotNull
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name = "recently_used")
     private Date recently_used;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name = "insert_date")
     private Date insert_date;
 
