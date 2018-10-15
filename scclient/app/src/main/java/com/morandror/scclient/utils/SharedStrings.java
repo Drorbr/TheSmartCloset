@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 public class SharedStrings {
 
     //server urls
-    public static final String SERVER_IP = "192.168.1.106:8080";
+    public static final String SERVER_IP = "192.168.1.8:8080";
     public static final String SERVER_URL = "http://" + SERVER_IP + "/scServer";
 
     public static final String USER_URL = SERVER_URL + "/user";
