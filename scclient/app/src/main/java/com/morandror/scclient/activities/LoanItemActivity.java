@@ -1,8 +1,8 @@
 package com.morandror.scclient.activities;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +16,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.morandror.scclient.R;
 import com.morandror.scclient.models.Closet;
+import com.morandror.scclient.models.Friend;
 import com.morandror.scclient.models.Item;
-import com.morandror.scclient.models.QrCodeData;
 import com.morandror.scclient.utils.JsonHandler;
 import com.morandror.scclient.utils.http.RequestQueueSingleton;
 
@@ -28,48 +28,39 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 import static com.morandror.scclient.utils.SharedStrings.ADD_ITEM_URL;
+import static com.morandror.scclient.utils.SharedStrings.LOAN_ITEM_URL;
 import static com.morandror.scclient.utils.SharedStrings.REQUEST_TIMEOUT;
 
-public class AddItemActivity extends AppCompatActivity {
+public class LoanItemActivity extends AppCompatActivity {
+
     ProgressBar progressBar;
     ViewGroup parent;
     int index;
     private TextView errorText;
     LinkedHashMap<EditText, String> etAndStringDict;
-    Item newItem;
-    int closetId;
-    QrCodeData qrCodeData;
+    //int closetId;
+    int itemId;
+    Friend newFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_item);
+        setContentView(R.layout.activity_loan_item);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 progressBar = findViewById(R.id.progressBar_cyclic2);
-                errorText = findViewById(R.id.add_item_error_text);
+                errorText = findViewById(R.id.loan_item_error_text);
                 parent = (ViewGroup) errorText.getParent();
                 index = parent.indexOfChild(errorText);
-                closetId = getIntent().getIntExtra(getString(R.string.closet_id), 0);
-                qrCodeData = (QrCodeData) getIntent().getSerializableExtra(getString(R.string.qrData));
+                //closetId = getIntent().getIntExtra(getString(R.string.closet_id), 0);
+                itemId = getIntent().getIntExtra(getString(R.string.item_id), 0);
                 etAndStringDict = initEtAndStringDict();
-
-                if(qrCodeData != null) {
-                    EditText editText = findViewById(R.id.add_item_type_val);
-                    editText.setText(qrCodeData.getType());
-                    editText = findViewById(R.id.add_item_brand_val);
-                    editText.setText(qrCodeData.getBrand());
-                    editText = findViewById(R.id.add_item_color_val);
-                    editText.setText(qrCodeData.getColor());
-                    editText = findViewById(R.id.add_item_size_val);
-                    editText.setText(qrCodeData.getSize());
-                }
             }
         });
     }
 
-    protected void submitItem(View button) {
+    public void submitLoanAction(View view) {
         boolean foundError = false;
         String emptyErr = "Value can't be empty";
 
@@ -87,28 +78,29 @@ public class AddItemActivity extends AppCompatActivity {
         }
 
         if (!foundError)
-            injectItemToServer();
+            updateItemDetailsOnServer();
         else
             removeProgressBar();
     }
 
-    private void injectItemToServer() {
-        newItem = getItemFromDict(etAndStringDict);
+    private void updateItemDetailsOnServer() {
+        newFriend = getFriendFromDict(etAndStringDict);
 
         try {
-            JSONObject newItemObj = new JSONObject(newItem.toJson());
-            JsonObjectRequest request = new JsonObjectRequest(String.format(ADD_ITEM_URL, closetId), newItemObj,
+            JSONObject newItemObj = new JSONObject(newFriend.toJson());
+            JsonObjectRequest request = new JsonObjectRequest(String.format(LOAN_ITEM_URL, itemId), newItemObj,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            System.out.println("Item added successfully");
-                            returnToClosetInfo((Closet) JsonHandler.getInstance().fromString(response.toString(), Closet.class));
+                            System.out.println("Loan item successfully");
+                            returnToItemPage((Item) JsonHandler.getInstance().fromString(response.toString(), Item.class));
+                            //returnToUserPage();
                         }
                     }, new Response.ErrorListener() {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    System.out.println("Failed to add new item - " + error.toString());
+                    System.out.println("Failed to loan item - " + error.toString());
                     removeProgressBar();
                     errorText.setVisibility(View.VISIBLE);
                     errorText.setText(R.string.error_insert_item);
@@ -122,12 +114,18 @@ public class AddItemActivity extends AppCompatActivity {
         }
     }
 
-    private void returnToClosetInfo(Closet closet) {
-        Intent startNewActivity = new Intent(getBaseContext(), ClosetInfoActivity.class);
-        startNewActivity.putExtra(getString(R.string.closet), closet);
+    private void returnToItemPage(Item item) {
+        Intent startNewActivity = new Intent(getBaseContext(), ItemInfoPopUp.class);
+        startNewActivity.putExtra(getString(R.string.item), item);
         startNewActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(startNewActivity);
     }
+
+/*    private void returnToUserPage() {//TODO:change to get closet
+        Intent startNewActivity = new Intent(getBaseContext(), ClosetInfoActivity.class);
+        startNewActivity.putExtra(getString(R.string.closet), closet);
+        startActivity(startNewActivity);
+    }*/
 
     private void showProgressBar() {
         setProgressBarVisibility1(View.VISIBLE);
@@ -150,34 +148,20 @@ public class AddItemActivity extends AppCompatActivity {
     private LinkedHashMap<EditText, String> initEtAndStringDict() {
         LinkedHashMap<EditText, String> etAndStringDict = new LinkedHashMap<>();
 
-        etAndStringDict.put((EditText) findViewById(R.id.add_item_type_val), null);
-        etAndStringDict.put((EditText) findViewById(R.id.add_item_brand_val), null);
-        etAndStringDict.put((EditText) findViewById(R.id.add_item_color_val), null);
-        etAndStringDict.put((EditText) findViewById(R.id.add_item_foundAt_val), null);
-        etAndStringDict.put((EditText) findViewById(R.id.add_item_size_val), null);
+        etAndStringDict.put((EditText) findViewById(R.id.loan_item_email_val), null);
+        etAndStringDict.put((EditText) findViewById(R.id.loan_item_first_name_val), null);
+        etAndStringDict.put((EditText) findViewById(R.id.loan_item_last_name_val), null);
 
         return etAndStringDict;
     }
 
-    private Item getItemFromDict(LinkedHashMap<EditText, String> etAndStringDict) {
-        Item item = new Item();
+    private Friend getFriendFromDict(LinkedHashMap<EditText, String> etAndStringDict) {
+       Friend friend = new Friend();
 
-        item.setBrand(etAndStringDict.get((EditText) findViewById(R.id.add_item_brand_val)));
-        item.setType(etAndStringDict.get((EditText) findViewById(R.id.add_item_type_val)));
-        item.setColor(etAndStringDict.get((EditText) findViewById(R.id.add_item_color_val)));
-        item.setSize(etAndStringDict.get((EditText) findViewById(R.id.add_item_size_val)));
-        item.setFoundAt(etAndStringDict.get((EditText) findViewById(R.id.add_item_foundAt_val)));
-        item.setUsage(0);
-        item.setInsert_date(new Date());
-        item.setImage(qrCodeData != null ? qrCodeData.getImage() : null);
+       friend.setFirstName(etAndStringDict.get((EditText) findViewById(R.id.loan_item_first_name_val)));
+       friend.setLastName(etAndStringDict.get((EditText) findViewById(R.id.loan_item_last_name_val)));
+       friend.setEmail(etAndStringDict.get((EditText) findViewById(R.id.loan_item_email_val)));
 
-        return item;
-    }
-
-    public void scanQR(View view) {
-        Intent scanQR = new Intent(getBaseContext(), ScanQRActivity.class);
-        scanQR.putExtra(getString(R.string.closet_id), closetId);
-        scanQR.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(scanQR);
+        return friend;
     }
 }

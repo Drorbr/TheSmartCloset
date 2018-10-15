@@ -4,8 +4,8 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.morandror.scclient"
-        minSdkVersion 28
-        targetSdkVersion 28
+        minSdkVersion 26
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -38,6 +38,7 @@ dependencies {
     )
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.android.support:cardview-v7:28'
+    implementation 'com.google.android.gms:play-services-vision:15.0.0'
 }
 
 allprojects {

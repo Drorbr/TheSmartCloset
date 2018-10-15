@@ -13,8 +13,9 @@ public class Item extends BaseModel {
     private String color;
     private String size;
     private String type;
+    private String friendEmail;
 
-    public Item(String foundAt, String image, Date recently_used, int usage, String brand, String color, String size, String type) {
+    public Item(String foundAt, String image, Date recently_used, int usage, String brand, String color, String size, String type, String friendEmail) {
         this.foundAt = foundAt;
         this.image = image;
         this.recently_used = recently_used;
@@ -23,6 +24,7 @@ public class Item extends BaseModel {
         this.color = color;
         this.size = size;
         this.type = type;
+        this.friendEmail = friendEmail;
     }
 
     public Item() {
@@ -106,6 +108,14 @@ public class Item extends BaseModel {
 
     public void setInsert_date(Date insert_date) {
         this.insert_date = insert_date;
+    }
+
+    public String getFriendEmail() {
+        return friendEmail;
+    }
+
+    public void setFriendEmail(String friendEmail) {
+        this.friendEmail = friendEmail;
     }
 
     @Override

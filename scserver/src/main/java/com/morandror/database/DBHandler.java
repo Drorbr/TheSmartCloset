@@ -4,6 +4,7 @@ import com.morandror.database.repositories.ClosetRepository;
 import com.morandror.database.repositories.ItemRepository;
 import com.morandror.database.repositories.UserHasClosetRepository;
 import com.morandror.database.repositories.UserRepository;
+import com.morandror.models.Friend;
 import com.morandror.models.dbmodels.Closet;
 import com.morandror.models.dbmodels.Item;
 import com.morandror.models.dbmodels.User;
@@ -205,5 +206,24 @@ public class DBHandler {
         }
 
         return user;
+    }
+
+    public Item loanItem(int itemID, Friend friend) {
+        logger.info("Database - loan item to friend");
+        return itemRepository.findById(itemID).map(item -> {
+            item.setFoundAt(String.format("%s %s",friend.getFirstName(),friend.getLastName()));
+            item.setFriendEmail(friend.getEmail());
+             return itemRepository.saveAndFlush(item);
+        }).orElseThrow(() -> new ResourceNotFoundException("Item id:" + itemID + " not found"));
+    }
+
+    public ResponseEntity<?> setItemBackInCloset(int itemID) {
+        logger.info("Database - set item back in closet");
+        return itemRepository.findById(itemID).map(item -> {
+            item.setFoundAt("Me");
+            item.setFriendEmail(null);
+            itemRepository.saveAndFlush(item);
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("Item id:" + itemID + " not found"));
     }
 }

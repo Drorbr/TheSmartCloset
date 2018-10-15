@@ -21,16 +21,21 @@ public class Item extends BaseModel {
     @Column(name = "found_at")
     private String foundAt;
 
+    @Column(name = "friend_email")
+    private String friendEmail;
+
     @Column(name = "image")
     private byte[] image;
 
     //@NotNull
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name = "recently_used")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date recently_used;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name = "insert_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date insert_date;
 
     @NotNull
@@ -146,5 +151,13 @@ public class Item extends BaseModel {
 
     public void setInsert_date(Date insert_date) {
         this.insert_date = insert_date;
+    }
+
+    public String getFriendEmail() {
+        return friendEmail;
+    }
+
+    public void setFriendEmail(String friendEmail) {
+        this.friendEmail = friendEmail;
     }
 }

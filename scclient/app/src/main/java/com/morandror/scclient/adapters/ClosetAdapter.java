@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,18 +123,24 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
         closetId.setText(String.valueOf(currentCloset.getId()));
 
         if (currentCloset.getImage() != null && !currentCloset.getImage().isEmpty()) {
-            Bitmap bMap = BitmapFactory.decodeByteArray(currentCloset.getImage().getBytes(), 0, currentCloset.getImage().getBytes().length);
-            imageView.setImageBitmap(bMap);
-
-            ByteBuffer bb = ByteBuffer.wrap(currentCloset.getImage().getBytes());
-            ImageDecoder.Source source = ImageDecoder.createSource(bb);
-            try {
-                Bitmap bMap2 = ImageDecoder.decodeBitmap(source);
-                imageView.setImageBitmap(bMap2);
-            } catch (IOException e) {
-                System.out.println("Failed to init image");
+            byte[] itemImageBytes = Base64.decode(currentCloset.getImage(), Base64.DEFAULT);
+            Bitmap bMap = BitmapFactory.decodeByteArray(itemImageBytes, 0, itemImageBytes.length);
+            if(bMap != null) {
+                imageView.setImageBitmap(bMap);
+            }
+            else {
                 imageView.setImageResource(R.drawable.sclogowhite);
             }
+
+//            ByteBuffer bb = ByteBuffer.wrap(currentCloset.getImage().getBytes());
+//            ImageDecoder.Source source = ImageDecoder.createSource(bb);
+//            try {
+//                Bitmap bMap2 = ImageDecoder.decodeBitmap(source);
+//                imageView.setImageBitmap(bMap2);
+//            } catch (IOException e) {
+//                System.out.println("Failed to init image");
+//                imageView.setImageResource(R.drawable.sclogowhite);
+//            }
         } else {
             imageView.setImageResource(R.drawable.sclogowhite);
         }
@@ -181,6 +188,7 @@ public class ClosetAdapter extends RecyclerView.Adapter<ClosetAdapter.MyViewHold
                             public void onResponse(JSONObject response) {
                                 Intent statsIntent = new Intent(view1.getContext(), StatsActivity.class);
                                 statsIntent.putExtra(view1.getContext().getString(R.string.stats), (Statistics) JsonHandler.getInstance().fromString(response.toString(), Statistics.class));
+                                statsIntent.putExtra("custom title", currentCloset.getName());
                                 view1.getContext().startActivity(statsIntent);
                             }
                         }, new Response.ErrorListener() {

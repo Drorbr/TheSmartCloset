@@ -1,6 +1,7 @@
 package com.morandror.scserver;
 
 import com.morandror.models.EmailObj;
+import com.morandror.models.Friend;
 import com.morandror.models.Statistics;
 import com.morandror.models.dbmodels.Closet;
 import com.morandror.models.dbmodels.Item;
@@ -145,5 +146,22 @@ public class ScServerController {
     public ResponseEntity<?> deleteCloset(@PathVariable("closetID") int closetID) {
         logger.info("delete closet post request - delete closet id " + closetID);
         return manager.deleteCloset(closetID);
+    }
+
+    @RequestMapping(value = "/item/loan/{itemID}", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> loanItem(@RequestBody Friend friend, @PathVariable("itemID") int itemID) {
+        logger.info("Loan item post request - loan item id " + itemID + "to friend with email " + friend.getEmail());
+        Item updatedItem = manager.loanItem(itemID, friend);
+        if(updatedItem != null){
+            return new ResponseEntity<Object>(updatedItem, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/item/setback/{itemID}", method = RequestMethod.GET)
+    public ResponseEntity<?> setItemBackInCloset(@PathVariable("itemID") int itemID) {
+        logger.info("set item back in closet - get request. Got item id: " + itemID);
+        return manager.setItemBackInCloset(itemID);
     }
 }

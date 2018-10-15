@@ -1,10 +1,8 @@
 package com.morandror.scclient.utils;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.text.DateFormat;
 
 public class JsonHandler {
     private Gson gson;
@@ -12,7 +10,7 @@ public class JsonHandler {
     private final static Object key = new Object();
 
     private JsonHandler() {
-        this.gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss.SSS").create();
+        this.gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
     }
 
     public static JsonHandler getInstance() {

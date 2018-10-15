@@ -81,10 +81,24 @@
         android:text="@string/add_item_foundAt_explain" />
 
     <Button
+        android:id="@+id/add_item_scan_qr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|end"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp"
+        android:onClick="scanQR"
+        android:text="@string/scan_qr"
+        android:textColor="#fff" />
+
+    <Button
         android:id="@+id/add_item_submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center_horizontal|start"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"

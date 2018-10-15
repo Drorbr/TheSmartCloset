@@ -42,6 +42,7 @@ public class Closet extends BaseModel {
     @NotNull
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name = "insert_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date insertDate;
 
     @JsonBackReference

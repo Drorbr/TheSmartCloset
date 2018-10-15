@@ -1,6 +1,7 @@
 package com.morandror.scmanager;
 
 import com.morandror.database.DBHandler;
+import com.morandror.models.Friend;
 import com.morandror.models.Statistics;
 import com.morandror.models.dbmodels.Closet;
 import com.morandror.models.dbmodels.Item;
@@ -84,5 +85,13 @@ public class scManager {
 
     public Optional<User> getUserByID(int userID) {
         return dbHandler.getUserByID(userID);
+    }
+
+    public Item loanItem(int itemID, Friend friend) {
+        return dbHandler.loanItem(itemID, friend);
+    }
+
+    public ResponseEntity<?> setItemBackInCloset(int itemID) {
+        return dbHandler.setItemBackInCloset(itemID);
     }
 }
